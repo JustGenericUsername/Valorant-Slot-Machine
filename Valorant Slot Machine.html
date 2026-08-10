@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VALORANT Buy Slot Machine</title>
+<style>
+  :root{
+    --bg:#070b10;
+    --panel:#0d131b;
+    --panel2:#111923;
+    --line:#26313d;
+    --muted:#788493;
+    --text:#f3f5f7;
+    --accent:#75f4d1;
+    --accent2:#3de4c2;
+    --danger:#ff5c6c;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    min-height:100vh;
+    font-family:Arial,Helvetica,sans-serif;
+    background:
+      radial-gradient(circle at 50% -10%,#1a2934 0,transparent 42%),
+      linear-gradient(145deg,#070b10,#0b1118 55%,#070a0e);
+    color:var(--text);
+    display:flex;
+    justify-content:center;
+    padding:28px 16px;
+  }
+  .app{width:min(1050px,100%)}
+  .topbar{
+    display:flex;align-items:end;justify-content:space-between;gap:18px;
+    padding:18px 20px;border:1px solid var(--line);
+    background:rgba(9,14,20,.9);box-shadow:0 18px 60px #0008;
+  }
+  .brand{font-weight:900;letter-spacing:.14em;font-size:18px}
+  .sub{color:var(--muted);font-size:10px;letter-spacing:.2em;margin-top:6px}
+  .controls{display:flex;align-items:end;gap:12px;flex-wrap:wrap}
+  label{display:block;color:#84909e;font-size:10px;letter-spacing:.15em;font-weight:800;margin:0 0 6px}
+  select,input{
+    width:170px;height:42px;border:1px solid #34414e;background:#101821;color:white;
+    padding:0 12px;font-weight:800;outline:none;
+  }
+  .agent-select-wrapper{position:relative}
+  .agent-select-toggle{
+    min-width:250px;height:42px;border:1px solid #34414e;background:#101821;color:white;
+    padding:0 12px;font-weight:800;outline:none;cursor:pointer;
+    display:flex;align-items:center;gap:8px;justify-content:space-between;
+  }
+  .agent-select-toggle:hover{border-color:var(--accent)}
+  .agent-select-toggle img{width:18px;height:18px;object-fit:contain;display:block}
+  .agent-dropdown{
+    position:absolute;top:calc(100% + 6px);left:0;width:max-content;min-width:250px;max-width:320px;max-height:260px;overflow:auto;
+    background:#0c131b;border:1px solid #34414e;box-shadow:0 16px 38px rgba(0,0,0,.55);border-radius:10px;
+    display:none;z-index:10;
+  }
+  .agent-dropdown.open{display:block}
+  .agent-option{
+    width:100%;display:flex;align-items:center;gap:10px;padding:10px 12px;
+    border:none;background:none;color:#f3f5f7;text-align:left;font:inherit;cursor:pointer;
+  }
+  .agent-option:hover,.agent-option.active{background:rgba(93,238,217,.08)}
+  .agent-option img{width:22px;height:22px;object-fit:contain;flex-shrink:0}
+  .dropdown-arrow{color:#788493;font-size:14px;}
+  input{width:130px}
+  select:focus,input:focus{border-color:var(--accent)}
+  .hero{
+    border:1px solid var(--line);border-top:0;background:#080d13;
+  }
+  .heads,.slots,.summary{display:grid;grid-template-columns:1fr 1fr 1fr}
+  .heads>div{
+    text-align:center;padding:16px 10px 12px;border-right:1px solid var(--line);
+    color:#7d8997;font-size:11px;font-weight:900;letter-spacing:.22em;
+  }
+  .heads>div:last-child{border-right:0}
+  .slots{min-height:460px}
+  .slot{
+    position:relative;border-right:1px solid var(--line);overflow:hidden;
+    display:flex;align-items:center;justify-content:center;padding:18px;
+    background:linear-gradient(#0a1017,#0a0f15);
+    min-height:430px;
+  }
+  .slot:last-child{border-right:0}
+  .slot:before,.slot:after{display:none}
+  .window{
+    position:relative;z-index:2;width:94%;height:100%;overflow:hidden;
+    border:1px solid #26323e;background:linear-gradient(180deg,#121b24,#0c1219);
+    box-shadow:0 0 0 1px #000 inset,0 16px 40px #0008;
+  }
+  .reel{
+    position:absolute;inset:0;
+    display:flex;flex-direction:column;align-items:stretch;
+    gap:10px;
+    transform:translateY(0);
+    will-change:transform;
+  }
+  .reel-card{
+    position:relative;
+    flex:0 0 132px;
+    height:132px;
+    display:flex;flex-direction:column;justify-content:center;align-items:center;
+    gap:8px;padding:16px 16px;
+    background:rgba(255,255,255,.04);
+    border:1px solid rgba(255,255,255,.06);
+    transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease, background .2s ease;
+  }
+  .reel-card.current{
+    background:linear-gradient(90deg,#131f28,#1d323f,#131f28);
+    box-shadow:0 0 0 1px rgba(93,238,217,.5), 0 18px 40px rgba(0,0,0,.35);
+    border:1px solid rgba(93,238,217,.85);
+    transform: scale(1.02);
+    z-index:2;
+  }
+  .reel-card.pop{
+    animation:pop .36s ease forwards, popGlow .18s ease 0.36s forwards;
+  }
+  .reel-card.pop::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    border-radius:8px;
+    background:linear-gradient(135deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.18) 50%, rgba(255,255,255,0) 100%);
+    opacity:0;
+    pointer-events:none;
+    mix-blend-mode:screen;
+    animation:shine .36s ease forwards;
+  }
+  .item-image{width:76px;height:auto;margin:0 auto 6px;display:block;object-fit:contain}
+  .item-image.shield-image{width:48px;height:48px;object-fit:contain;}
+  .utility-image{width:50px;height:50px;object-fit:contain;}
+  .item-copy{text-align:center;min-width:0;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .item-name{font-weight:1000;font-size:13px;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:0 auto}
+  .item-meta{margin-top:4px;color:#8a97a5;font-size:9px;font-weight:800;letter-spacing:.08em;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+  .credit-badge{display:inline-flex;align-items:center;gap:6px}
+  .credit-icon{width:12px;height:auto;display:block}
+  .item-detail{margin-top:6px;color:#7fe6cb;font-size:10px;font-weight:800;letter-spacing:.11em}
+  .item-bind{margin-top:4px;color:#8adfc5;font-size:9px;font-weight:800;letter-spacing:.12em}
+  .reel-card.center{
+    outline:1px solid #49616f;
+    outline-offset:-1px;
+  }
+  .result-line{
+    display:flex;justify-content:center;align-items:center;gap:12px;
+    min-height:74px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    color:#a8b4bf;font-size:12px;letter-spacing:.1em;font-weight:800;
+  }
+  .result-line strong{color:white}
+  button{
+    height:48px;padding:0 28px;border:1px solid #5af0ce;background:var(--accent);
+    color:#06100e;font-weight:1000;letter-spacing:.12em;cursor:pointer;
+    box-shadow:0 0 28px #47e4c330;text-transform:uppercase;
+  }
+  button:hover{filter:brightness(1.08)}
+  button:active{transform:translateY(1px)}
+  button:disabled{opacity:.55;cursor:not-allowed}
+  .spinrow{display:flex;justify-content:center;padding:20px;border-bottom:1px solid var(--line)}
+  .summary{
+    background:#090e14;
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+    gap:0;
+  }
+  .sum{
+    padding:14px 18px;border-right:1px solid var(--line);
+    min-height:68px;
+  }
+  .sum:last-child{border-right:0}
+  .sum b{display:inline-flex;align-items:center;gap:8px;}
+  .sum small{display:block;color:#707d8b;font-size:9px;font-weight:900;letter-spacing:.17em}
+  .sum b{display:block;margin-top:8px;font-size:14px}
+  .good{color:var(--accent)}.bad{color:var(--danger)}
+  .hint{
+    padding:14px 18px;color:#6f7b87;font-size:11px;line-height:1.5;
+    border:1px solid var(--line);border-top:0;background:#090e14;
+  }
+  .agent-pill{
+    display:inline-flex;gap:8px;align-items:center;color:#dce6eb;
+    border:1px solid #2b3743;padding:6px 9px;font-size:9px;letter-spacing:.12em;
+    margin-top:8px;
+  }
+  .agent-icon{width:18px;height:18px;object-fit:contain;display:block}
+  .agent-pill span{font-size:10px;font-weight:800;letter-spacing:.11em;text-transform:none;color:#f3f5f7}
+  .pulse{animation:pulse .18s linear infinite alternate}
+  @keyframes pulse{to{filter:brightness(1.7);transform:scale(1.015)}}
+  .shake{animation:shake .16s linear 2}
+  @keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+  @keyframes pop{0%{transform:scale(1.02);box-shadow:0 0 0 1px rgba(93,238,217,.5)}50%{transform:scale(1.07);box-shadow:0 0 0 3px rgba(93,238,217,.85)}100%{transform:scale(1.05);box-shadow:0 0 0 2px rgba(93,238,217,.75)}}
+  @keyframes shine{0%{opacity:0;transform:translateX(-80px) scaleX(0.8)}50%{opacity:1;transform:translateX(0) scaleX(1)}100%{opacity:0;transform:translateX(80px) scaleX(0.8)}}
+  @keyframes popGlow{0%{filter:brightness(1)}50%{filter:brightness(1.22)}100%{filter:brightness(1)}}
+  @media(max-width:700px){
+    body{padding:10px}.topbar{align-items:flex-start;flex-direction:column}
+    .controls{width:100%}.controls>div{flex:1}.controls select,.controls input{width:100%}
+    .slots{min-height:350px}.window{height:205px}.reel-card{flex-basis:68px;height:68px;padding:8px 10px}.icon{width:48px;flex-basis:48px}.icon svg{width:43px;height:39px}
+    .item-name{font-size:12px}.heads>div{font-size:9px}.sum{padding:11px 8px}.sum b{font-size:11px}
+    button{width:100%}
+  }
+</style>
+</head>
+<body>
+<audio id="spinAudio" src="spin-music.mp3" preload="auto"></audio>
+<div class="app">
+  <div class="topbar">
+    <div>
+      <div class="brand">BUY // SLOT MACHINE</div>
+      <div class="sub">RANDOMIZED VALORANT BUY GENERATOR</div>
+    </div>
+    <div class="controls">
+      <div>
+        <label>AGENT</label>
+        <div class="agent-select-wrapper">
+          <button id="agentDropdownButton" type="button" class="agent-select-toggle" aria-haspopup="listbox" aria-expanded="false">
+            <img src="" alt="" class="agent-icon" id="agentDropdownIcon" />
+            <span id="agentDropdownLabel"></span>
+            <span class="dropdown-arrow">▾</span>
+          </button>
+          <div class="agent-dropdown" id="agentDropdownMenu" role="listbox" aria-labelledby="agentDropdownButton"></div>
+        </div>
+        <select id="agent" hidden></select>
+      </div>
+      <div>
+        <label>CREDITS</label>
+        <input id="credits" type="number" min="0" max="9000" step="50" value="800">
+      </div>
+    </div>
+  </div>
+
+  <section class="hero">
+    <div class="heads">
+      <div>WEAPON</div><div>UTILITY</div><div>SHIELD</div>
+    </div>
+
+    <div class="slots">
+      <div class="slot"><div class="window" id="weaponWindow"></div></div>
+      <div class="slot"><div class="window" id="utilityWindow"></div></div>
+      <div class="slot"><div class="window" id="shieldWindow"></div></div>
+    </div>
+
+    <div class="result-line">
+      <span>READY</span>
+      <span>•</span>
+      <strong id="message">Set your agent and credits, then spin.</strong>
+    </div>
+
+    <div class="spinrow">
+      <button id="spin">SPIN BUY</button>
+    </div>
+
+    <div class="summary">
+      <div class="sum"><small>WEAPON</small><b id="sumWeapon">—</b></div>
+      <div class="sum"><small>UTILITY</small><b id="sumUtility">—</b></div>
+      <div class="sum"><small>SHIELD</small><b id="sumShield">—</b></div>
+      <div class="sum"><small>AGENT</small><b id="sumAgent">—</b></div>
+      <div class="sum"><small>START</small><b id="sumStart">—</b></div>
+      <div class="sum"><small>SPENT</small><b id="sumSpent">—</b></div>
+      <div class="sum"><small>LEFT</small><b id="sumLeft">—</b></div>
+    </div>
+  </section>
+
+  <div class="hint">
+    Prices and ability costs below are stored in this single HTML file, so you can easily edit them when VALORANT changes.
+    The generator always filters out combinations that exceed your available credits.
+  </div>
+</div>
+
+<script>
+/*
+  EDITABLE DATA
+  The prices are kept here intentionally so this is a completely standalone file.
+*/
+const weapons = [
+  {name:"Classic", price:0, type:"Pistol"},
+  {name:"Shorty", price:300, type:"Shotgun"},
+  {name:"Frenzy", price:450, type:"Pistol"},
+  {name:"Ghost", price:500, type:"Pistol"},
+  {name:"Sheriff", price:800, type:"Pistol"},
+  {name:"Bandit", price:600, type:"Pistol"},
+  {name:"Stinger", price:1100, type:"SMG"},
+  {name:"Spectre", price:1600, type:"SMG"},
+  {name:"Bucky", price:850, type:"Shotgun"},
+  {name:"Judge", price:1850, type:"Shotgun"},
+  {name:"Bulldog", price:2050, type:"Rifle"},
+  {name:"Guardian", price:2250, type:"Rifle"},
+  {name:"Phantom", price:2900, type:"Rifle"},
+  {name:"Vandal", price:2900, type:"Rifle"},
+  {name:"Marshal", price:950, type:"Sniper"},
+  {name:"Outlaw", price:2400, type:"Sniper"},
+  {name:"Operator", price:4700, type:"Sniper"},
+  {name:"Ares", price:1600, type:"LMG"},
+  {name:"Odin", price:3200, type:"LMG"}
+];
+
+const shields = [
+  {name:"Nothing", price:0, type:"None"},
+  {name:"Light Shields", price:400, type:"Armor"},
+  {name:"Regen Shield", price:650, type:"Armor"},
+  {name:"Heavy Shields", price:1000, type:"Armor"}
+];
+
+const agents = {
+  Astra: [
+    {name:"Stars (x2)", price:150,bind:"X", icon:"Abilities/Stars.png"},
+    {name:"Stars (x3)", price:300,bind:"X", icon:"Abilities/Stars.png"},
+    {name:"Stars (x4)", price:450,bind:"X", icon:"Abilities/Stars.png"},
+    {name:"Stars (x5)", price:600,bind:"X", icon:"Abilities/Stars.png"}
+  ],
+  Breach: [
+    {name:"Aftershock", price:200, bind:"C", icon:"Abilities/Aftershock.png"},
+    {name:"Flashpoint", price:250, bind:"Q", icon:"Abilities/Flashpoint.png"},
+    {name:"Flashpoint (x2)", price:500, bind:"Q", icon:"Abilities/Flashpoint.png"},
+    {name:"Full Util", price:700, bind:"X", icon:"Abilities/BreachUlt.png"}
+  ],
+  Brimstone: [
+    {name:"Incendiary", price:250, bind:"Q", icon:"Abilities/Incendiary.png"},
+    {name:"Sky Smoke", price:0, bind:"E", icon:"Abilities/Sky_Smoke.png"},
+    {name:"Sky Smoke (x2)", price:100, bind:"E", icon:"Abilities/Sky_Smoke.png"},
+    {name:"Sky Smoke (x3)", price:200, bind:"E", icon:"Abilities/Sky_Smoke.png"},
+    {name:"Stim Beacon", price:200, bind:"C", icon:"Abilities/Stim_Beacon.png"},
+    {name:"Full Util", price:650, bind:"X", icon:"Abilities/BrimstoneUlt.png"}
+  ],
+  Chamber: [
+    {name:"Trademark", price:200, bind:"C", icon:"Abilities/Trademark.png"},
+    {name:"Headhunter (x4)", price:400, bind:"Q", icon:"Abilities/Headhunter.png"},
+    {name:"Headhunter (FULL)", price:800, bind:"Q", icon:"Abilities/Headhunter.png"},
+    {name:"Full Util", price:1000, bind:"X", icon:"Abilities/ChamberUlt.png"}
+    
+  ],
+  Clove: [
+    {name:"Meddle", price:250, bind:"Q", icon:"Abilities/Meddle.png"},
+    {name:"Ruse", price:150, bind:"E", icon:"Abilities/Ruse.png"},
+    {name:"Pick-Me-Up", price:200, bind:"C", icon:"Abilities/Pick-me-up.png"},
+    {name:"Full Util", price:600, bind:"X", icon:"Abilities/CloveUlt.png"}
+  ],
+  Cypher: [
+    {name:"Trapwire", price:200, bind:"C", icon:"Abilities/Trapwire.png"},
+    {name:"Trapwire (x2)", price:400, bind:"C", icon:"Abilities/Trapwire.png"},
+    {name:"Cyber Cage", price:100, bind:"Q", icon:"Abilities/Cyber_Cage.png"},
+    {name:"Cyber Cage (x2)", price:200, bind:"Q", icon:"Abilities/Cyber_Cage.png"},
+    {name:"Full Util", price:600, bind:"X", icon:"Abilities/CypherUlt.png"}
+  ],
+  Deadlock: [
+    {name:"Sonic Sensor", price:200, bind:"Q", icon:"Abilities/Sonic_Sensor.png"},
+    {name:"Sonic Sensor (x2)", price:400, bind:"Q", icon:"Abilities/Sonic_Sensor.png"},
+    {name:"Barrier Mesh", price:300, bind:"C", icon:"Abilities/Barrier_Mesh.png"},
+    {name:"Full Util", price:700, bind:"X", icon:"Abilities/DeadlockUlt.png"}
+  ],
+  Fade: [
+    {name:"Prowler", price:250, bind:"C", icon:"Abilities/Prowler.png"},
+    {name:"Prowler (x2)", price:500, bind:"C", icon:"Abilities/Prowler.png"},
+    {name:"Seize", price:200, bind:"Q", icon:"Abilities/Seize.png"},
+    {name:"Full Util", price:700, bind:"X", icon:"Abilities/FadeUlt.png"}
+  ],
+  Gekko: [
+    {name:"Full Util", price:550, bind:"X", icon:"Abilities/GekkoUlt.png"},
+    {name:"Mosh Pit", price:250, bind:"C", icon:"Abilities/Mosh_Pit.png"},
+    {name:"Wingman", price:300, bind:"Q", icon:"Abilities/Wingman.png"}
+  ],
+  Harbor: [
+    {name:"Storm Surge", price:200, bind:"C", icon:"Abilities/Storm_Surge.png"},
+    {name:"Full Util", price:500, bind:"X", icon:"Abilities/HarborUlt.png"},
+    {name:"High Tide", price:300, bind:"Q", icon:"Abilities/High_Tide.png"}
+  ],
+  Iso: [
+    {name:"Contingency", price:200, bind:"C", icon:"Abilities/Contingency.png"},
+    {name:"Undercut", price:300, bind:"Q", icon:"Abilities/Undercut.png"},
+    {name:"Full Util", price:500, bind:"X", icon:"Abilities/IsoUlt.png"}
+  ],
+  Jett: [
+    {name:"Cloudburst", price:200, bind:"C", icon:"Abilities/Cloudburst.png"},
+    {name:"Cloudburst (x2)", price:400, bind:"C", icon:"Abilities/Cloudburst.png"},
+    {name:"Updraft", price:150, bind:"Q", icon:"Abilities/Updraft.png"},
+    {name:"Full Util", price:550, bind:"X", icon:"Abilities/JettUlt.png"}
+  ],
+  "KAY/O": [
+    {name:"FRAG/ment", price:200, bind:"C", icon:"Abilities/FRAG-ment.png"},
+    {name:"FLASH/drive", price:250, bind:"Q", icon:"Abilities/FLASH-drive.png"},
+    {name:"FLASH/drive (x2)", price:500, bind:"Q", icon:"Abilities/FLASH-drive.png"},
+    {name:"FULL/util", price:700, bind:"X", icon:"Abilities/KayoUlt.png"}
+  ],
+  Killjoy: [
+    {name:"Alarmbot", price:200, bind:"Q", icon:"Abilities/Alarmbot.png"},
+    {name:"Full Util", price:600, bind:"X", icon:"Abilities/KilljoyUlt.png"},
+    {name:"Nanoswarm", price:200, bind:"C", icon:"Abilities/Nanoswarm.png"},
+    {name:"Nanoswarm (x2)", price:400, bind:"C", icon:"Abilities/Nanoswarm.png"}
+  ],
+  Miks: [
+    {name:"M-Pulse", price:250, bind:"C", icon:"Abilities/M-Pulse.png"},
+    {name:"M-Pulse (x2)", price:500, bind:"C", icon:"Abilities/M-Pulse.png"},
+    {name:"Harmonize", price:200, bind:"Q", icon:"Abilities/Harmonize.png"},
+    {name:"Full Util", price:700, bind:"X", icon:"Abilities/MiksUlt.png"}
+  ],
+  Neon: [
+    {name:"Fast Lane", price:300, bind:"C", icon:"Abilities/Fast_Lane.png"},
+    {name:"Relay Bolt", price:200, bind:"Q", icon:"Abilities/Relay_Bolt.png"},
+    {name:"Full Util", price:500, bind:"X", icon:"Abilities/NeonUlt.png"}
+  ],
+  Omen: [
+    {name:"Shrouded Step", price:100, bind:"C", icon:"Abilities/Shrouded_Step.png"},
+    {name:"Shrouded Step (x2)", price:200, bind:"C", icon:"Abilities/Shrouded_Step.png"},
+    {name:"Paranoia", price:250, bind:"Q", icon:"Abilities/Paranoia.png"},
+    {name:"Dark Cover", price:150,  bind:"E", icon:"Abilities/Dark_Cover.png"},
+    {name:"Full Util", price:600,  bind:"X", icon:"Abilities/OmenUlt.png"}
+  ],
+  Phoenix: [
+    {name:"Blaze", price:150, bind:"C", icon:"Abilities/Blaze.png"},
+    {name:"Curveball", price:250, bind:"E", icon:"Abilities/Curveball.png"},
+    {name:"Hot Hands", price:200, bind:"Q", icon:"Abilities/Hot_Hands.png"},
+    {name:"Full Util", price:600, bind:"X", icon:"Abilities/PhoenixUlt.png"}
+  ],
+  Raze: [
+    {name:"Full Util", price:700, bind:"X", icon:"Abilities/RazeUlt.png"},
+    {name:"Blast Pack", price:200, bind:"Q", icon:"Abilities/Blast_Pack.png"},
+    {name:"Blast Pack (x2)", price:400, bind:"Q", icon:"Abilities/Blast_Pack.png"},
+    {name:"Boom Bot", price:300, bind:"C", icon:"Abilities/Boom_Bot.png"}
+  ],
+  Reyna: [
+    {name:"Dismiss/Devour", price:200, bind:"E/Q", icon:"Abilities/Dismiss.png"},
+    {name:"Leer", price:250, bind:"C", icon:"Abilities/Leer.png"},
+    {name:"Leer (x2)", price:500, bind:"C", icon:"Abilities/Leer.png"},
+    {name:"Full Util", price:700, bind:"C", icon:"Abilities/ReynaUlt.png"}
+    
+  ],
+  Sage: [
+    {name:"Barrier Orb", price:300, bind:"C", icon:"Abilities/Barrier_Orb.png"},
+    {name:"Slow Orb", price:200, bind:"Q", icon:"Abilities/Slow_Orb.png"},
+    {name:"Slow Orb (x2)", price:400, bind:"Q", icon:"Abilities/Slow_Orb.png"},
+    {name:"Full Util", price:700, bind:"X", icon:"Abilities/SageUlt.png"}
+  ],
+  Skye: [
+    {name:"Trailblazer", price:300, bind:"Q", icon:"Abilities/Trailblazer.png"},
+    {name:"Guiding Light", price:250, bind:"E", icon:"Abilities/Guiding_Light.png"},
+    {name:"Regrowth", price:150, bind:"C", icon:"Abilities/Regrowth.png"},
+    {name:"Full Util", price:700, bind:"X", icon:"Abilities/SkyeUlt.png"}
+  ],
+  Sova: [
+    {name:"Shock Bolt", price:150, bind:"Q", icon:"Abilities/Shock_Bolt.png"},
+    {name:"Shock Bolt (x2)", price:300, bind:"Q", icon:"Abilities/Shock_Bolt.png"},
+    {name:"Full Util", price:700, bind:"X", icon:"Abilities/SovaUlt.png"},
+    {name:"Owl Drone", price:400, bind:"C", icon:"Abilities/Dark_Cover.png"}
+  ],
+  Tejo: [
+    {name:"Stealth Drone", price:400, bind:"C", icon:"Abilities/Stealth_Drone.png"},
+    {name:"Special Delivery", price:200, bind:"Q", icon:"Abilities/Special_Delivery.png"},
+    {name:"Full Util", price:600, bind:"X", icon:"Abilities/TejoUlt.png"}
+  ],
+  Veto: [
+    {name:"Crosscut", price:200, bind:"C", icon:"Abilities/Crosscut.png"},
+    {name:"Crosscut (x2)", price:400, bind:"C", icon:"Abilities/Crosscut.png"},
+    {name:"Chokehold", price:100, bind:"Q", icon:"Abilities/Chokehold.png"},
+    {name:"Full Util", price:500, bind:"X", icon:"Abilities/VetoUlt.png"}
+  ],
+  Viper: [
+    {name:"Snake Bite", price:300, bind:"E", icon:"Abilities/Snake_Bite.png"},
+    {name:"Poison Cloud", price:200, bind:"Q", icon:"Abilities/Poison_Cloud.png"},
+    {name:"Full Util", price:500, bind:"X", icon:"Abilities/ViperUlt.png"}
+  ],
+  Vyse: [
+    {name:"Razorvine", price:150, bind:"C", icon:"Abilities/Razorvine.png"},
+    {name:"Razorvine (x2)", price:300, bind:"C", icon:"Abilities/Razorvine.png"},
+    {name:"Shear", price:200, bind:"Q", icon:"Abilities/Shear.png"},
+    {name:"Full Util", price:500, bind:"X", icon:"Abilities/VyseUlt.png"}
+  ],
+  Waylay: [
+    {name:"Saturate", price:300, bind:"C", icon:"Abilities/Saturate.png"},
+    {name:"Lightspeed", price:300, bind:"Q", icon:"Abilities/Lightspeed.png"},
+    {name:"Full Util", price:600, bind:"X", icon:"Abilities/WaylayUlt.png"}
+  ],
+  Yoru: [
+    {name:"Fakeout", price:200, bind:"C", icon:"Abilities/Fakeout.png"},
+    {name:"Gatecrash", price:150, bind:"E", icon:"Abilities/Gatecrash.png"},
+    {name:"Blindside", price:250, bind:"Q", icon:"Abilities/Blindside.png"},
+    {name:"Full Util", price:600, bind:"Q", icon:"Abilities/YoruUlt.png"}
+  ]
+};
+
+const agentSelect = document.getElementById("agent");
+const agentDropdownButton = document.getElementById("agentDropdownButton");
+const agentDropdownMenu = document.getElementById("agentDropdownMenu");
+const agentDropdownIcon = document.getElementById("agentDropdownIcon");
+const agentDropdownLabel = document.getElementById("agentDropdownLabel");
+const creditsInput = document.getElementById("credits");
+const spinBtn = document.getElementById("spin");
+const message = document.getElementById("message");
+const spinAudio = document.getElementById("spinAudio");
+
+const els = {
+  weapon:document.getElementById("weaponWindow"),
+  utility:document.getElementById("utilityWindow"),
+  shield:document.getElementById("shieldWindow"),
+  sumWeapon:document.getElementById("sumWeapon"),
+  sumUtility:document.getElementById("sumUtility"),
+  sumShield:document.getElementById("sumShield"),
+  sumAgent:document.getElementById("sumAgent"),
+  sumStart:document.getElementById("sumStart"),
+  sumSpent:document.getElementById("sumSpent"),
+  sumLeft:document.getElementById("sumLeft")
+};
+
+function sanitizeAgentName(name){
+  return String(name).replace(/[^A-Za-z0-9]/g,"");
+}
+
+function agentIcon(name){
+  return `Agents/${encodeURIComponent(sanitizeAgentName(name))}_icon.png`;
+}
+
+function getUtilityPool(agentName){
+  return (agents[agentName] || agents[Object.keys(agents)[0]]).filter(item => item.bind !== "!");
+}
+
+function updateDropdownButton(name){
+  agentDropdownButton.setAttribute("aria-expanded", "false");
+  agentDropdownIcon.src = agentIcon(name);
+  agentDropdownIcon.alt = name;
+  agentDropdownIcon.onerror = function(){ this.style.display = 'none'; };
+  agentDropdownIcon.style.display = 'block';
+  agentDropdownLabel.textContent = name;
+}
+
+function buildAgentOptions(){
+  agentSelect.innerHTML = "";
+  agentDropdownMenu.innerHTML = "";
+  Object.keys(agents).forEach(name => {
+    const opt = document.createElement("option");
+    opt.value = name; opt.textContent = name;
+    agentSelect.appendChild(opt);
+
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "agent-option";
+    button.dataset.agent = name;
+    button.innerHTML = `<img src="${agentIcon(name)}" alt="${name}" onerror="this.style.display='none'" /><span>${name}</span>`;
+    agentDropdownMenu.appendChild(button);
+  });
+}
+
+function setSelectedAgent(name){
+  agentSelect.value = name;
+  updateDropdownButton(name);
+  renderAllWindows();
+  updateStart();
+  const iconHtml = `<img src="${agentIcon(name)}" alt="${name}" class="agent-icon" onerror="this.style.display='none'" />`;
+  els.sumAgent.innerHTML = `${iconHtml}<span>${name}</span>`;
+  Array.from(agentDropdownMenu.querySelectorAll(".agent-option")).forEach(item => {
+    item.classList.toggle("active", item.dataset.agent === name);
+  });
+}
+
+function toggleAgentDropdown(){
+  const open = agentDropdownMenu.classList.toggle("open");
+  agentDropdownButton.setAttribute("aria-expanded", open ? "true" : "false");
+}
+
+function closeAgentDropdown(){
+  agentDropdownMenu.classList.remove("open");
+  agentDropdownButton.setAttribute("aria-expanded", "false");
+}
+
+buildAgentOptions();
+agentSelect.value = Object.keys(agents)[0];
+setSelectedAgent(agentSelect.value);
+
+agentDropdownButton.addEventListener("click", (event) => {
+  event.stopPropagation();
+  toggleAgentDropdown();
+});
+
+agentDropdownMenu.addEventListener("click", (event) => {
+  const option = event.target.closest(".agent-option");
+  if (!option) return;
+  setSelectedAgent(option.dataset.agent);
+  closeAgentDropdown();
+});
+
+document.addEventListener("click", () => closeAgentDropdown());
+
+agentSelect.addEventListener("change", () => setSelectedAgent(agentSelect.value));
+
+function money(n){ return n.toLocaleString("en-US"); }
+
+
+function creditHtml(amount){
+  return `<span class="credit-badge"><img src="Credits_icon.png" alt="Credits" class="credit-icon" />${money(amount)}</span>`;
+}
+
+function svgIcon(type, name){
+  const safe = String(name).replace(/[^a-z0-9]/gi,"").toLowerCase();
+  if(type==="weapon"){
+    const long = /operator|marshal|outlaw|ares|odin|bulldog|guardian|phantom|vandal/.test(safe);
+    const shotgun = /shorty|bucky|judge/.test(safe);
+    const pistol = /classic|frenzy|ghost|sheriff/.test(safe);
+    const barrel = long ? 31 : shotgun ? 25 : pistol ? 20 : 24;
+    return `<svg viewBox="0 0 120 60" aria-hidden="true">
+      <path d="M8 27h${barrel}l8-8h18l8 5h28l8-7h13l5 6-7 7H72l-10 9H43l-4-7H23l-7 5H8z" fill="currentColor" opacity=".92"/>
+      <path d="M48 34l8 2-5 15H40zM83 28l10 3-7 15H75z" fill="currentColor" opacity=".75"/>
+      <circle cx="21" cy="30" r="3" fill="#071018"/><path d="M70 20h12" stroke="#071018" stroke-width="2"/>
+    </svg>`;
+  }
+  if(type==="shield"){
+    return `<svg viewBox="0 0 80 80" aria-hidden="true">
+      <path d="M40 7l27 10v20c0 18-11 29-27 37C24 66 13 55 13 37V17z" fill="none" stroke="currentColor" stroke-width="5"/>
+      <path d="M40 19l15 6v12c0 10-5 17-15 23-10-6-15-13-15-23V25z" fill="currentColor" opacity=".18"/>
+      <path d="M40 24v31M25 39h30" stroke="currentColor" stroke-width="4" opacity=".7"/>
+    </svg>`;
+  }
+  const symbols = {
+    "paint shells":"✺","blast pack":"▣","boom bot":"◉","cloudburst":"☁","updraft":"↟",
+    "tailwind":"➜","shock bolt":"ϟ","recon bolt":"⌁","owl drone":"◉","shrouded step":"✦",
+    "paranoia":"◈","dark cover":"●","barrier orb":"▥","slow orb":"❄","healing orb":"✚",
+    "dizzy":"◉","mosh pit":"✹","wingman":"◒","nothing":"◌"
+  };
+  const sym = symbols[safe.replace(/([a-z])([a-z])/g,"$1$2")] || "✦";
+  return `<svg viewBox="0 0 80 80" aria-hidden="true">
+    <circle cx="40" cy="40" r="29" fill="none" stroke="currentColor" stroke-width="3" opacity=".55"/>
+    <circle cx="40" cy="40" r="20" fill="currentColor" opacity=".12"/>
+    <text x="40" y="51" text-anchor="middle" font-size="28" font-family="Arial" fill="currentColor">${sym}</text>
+  </svg>`;
+}
+
+function weaponImage(name){
+  return `Guns/${encodeURIComponent(name)}.png`;
+}
+
+function shieldImage(name){
+  const map = {
+    "Light Shields": "Light_Armor.png",
+    "Heavy Shields": "Heavy_Armor.png",
+    "Regen Shield": "Regen_Shield.png"
+  };
+
+  const file = map[name] || `${encodeURIComponent(
+    String(name).trim().replace(/\s+/g, "_")
+  )}.png`;
+
+  return `Shields/${file}`;
+}
+
+function renderCard(item, type, extraClass = "") {
+
+  // Item type information
+  const detail = item.type
+    ? `<div class="item-detail">TYPE / ${item.type}</div>`
+    : "";
+
+  // Ability keybind information
+  const bind = item.bind
+    ? `<div class="item-bind">BIND / ${item.bind}</div>`
+    : "";
+
+  // Start with no image
+  let image = "";
+
+  // WEAPON IMAGE
+  if (type === "weapon") {
+
+    image = `
+      <img
+        src="${weaponImage(item.name)}"
+        alt="${item.name}"
+        class="item-image weapon-image"
+        onerror="this.remove()"
+      />
+    `;
+
+  }
+
+// UTILITY IMAGE
+else if (type === "utility" && item.icon) {
+  image = `
+    <img
+      src="${item.icon}"
+      alt="${item.name}"
+      class="item-image utility-image"
+      onerror="this.remove()"
+    />
+  `;
+}
+
+  // SHIELD IMAGE
+  else if (type === "shield" && item.name !== "Nothing") {
+
+    image = `
+      <img
+        src="${shieldImage(item.name)}"
+        alt="${item.name}"
+        class="item-image shield-image"
+        onerror="this.remove()"
+      />
+    `;
+
+  }
+
+  // Price / default text
+  const meta = item.name === "Nothing"
+    ? "DEFAULT"
+    : `COST / ${creditHtml(item.price)}`;
+
+  // Build the card
+  return `
+    <div class="reel-card ${extraClass}">
+
+      <div class="item-copy">
+
+        ${image}
+
+        <div class="item-name">
+          ${item.name}
+        </div>
+
+        <div class="item-meta">
+          ${meta}
+        </div>
+
+        ${detail}
+
+        ${bind}
+
+      </div>
+
+    </div>
+  `;
+}
+
+function renderFinal(el, item, type){
+  el.innerHTML = `<div class="reel">${renderCard(item,type,"current")}</div>`;
+}
+
+function renderStaticReel(el, pool, type){
+  const reel = document.createElement("div");
+  reel.className = "reel";
+  reel.innerHTML = pool.map((item) => renderCard(item, type)).join("");
+  el.innerHTML = "";
+  el.appendChild(reel);
+}
+
+function renderAllWindows(){
+  renderStaticReel(els.weapon, weapons, "weapon");
+  renderStaticReel(els.utility, getUtilityPool(agentSelect.value), "utility");
+  renderStaticReel(els.shield, shields, "shield");
+}
+
+function shuffle(arr){
+  const copy = [...arr];
+  for(let i = copy.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
+
+function chooseResult(budget){
+  const result = {w:null,u:null,s:null,total:0};
+  let remaining = budget;
+  const order = shuffle(["weapon","utility","shield"]);
+  const utilPool = getUtilityPool(agentSelect.value);
+
+  order.forEach(category => {
+    if(category === "weapon"){
+      const pool = affordablePool(weapons, remaining);
+      result.w = weightedRandom(pool);
+      remaining -= result.w.price;
+    } else if(category === "utility"){
+      const pool = affordablePool(utilPool, remaining);
+      result.u = weightedRandom(pool);
+      remaining -= result.u.price;
+    } else {
+      const pool = affordablePool(shields, remaining);
+      result.s = weightedRandom(pool);
+      remaining -= result.s.price;
+    }
+  });
+
+  result.total = result.w.price + result.u.price + result.s.price;
+  return result;
+}
+
+function buildReel(el, pool, final, type){
+  const reel = document.createElement("div");
+  reel.className="reel";
+  const cards=[];
+  for(let i=0;i<60;i++) cards.push(random(pool));
+  cards.push(final);
+  for(let i=0;i<4;i++) cards.push(random(pool));
+  reel.innerHTML=cards.map((x) => renderCard(x,type)).join("");
+  el.innerHTML="";
+  el.appendChild(reel);
+  return {reel, finalIndex:60};
+}
+
+function random(arr){
+  if(!arr || !arr.length) return {name:"Nothing", price:0, icon:"◌"};
+  return arr[Math.floor(Math.random()*arr.length)];
+}
+
+function weightedRandom(arr){
+  if(!arr || !arr.length) return {name:"Nothing", price:0, icon:"◌"};
+  const weights = arr.map(item => Math.pow(item.price + 50, 0.75));
+  const total = weights.reduce((sum, w) => sum + w, 0);
+  let r = Math.random() * total;
+  for(let i = 0; i < arr.length; i++){
+    r -= weights[i];
+    if(r < 0) return arr[i];
+  }
+  return arr[arr.length - 1];
+}
+
+function affordablePool(pool, budget){
+  return pool.filter(x=>x.price<=budget);
+}
+
+function updateStart(){
+  const c=Math.max(0,Number(creditsInput.value)||0);
+  els.sumStart.innerHTML=creditHtml(c);
+}
+
+agentSelect.addEventListener("change", ()=>{
+  updateStart();
+  renderAllWindows();
+  const name = agentSelect.value;
+  const iconHtml = `<img src="${agentIcon(name)}" alt="${name}" class="agent-icon" onerror="this.style.display='none'" />`;
+  els.sumAgent.innerHTML = `${iconHtml}<span>${name}</span>`;
+});
+creditsInput.addEventListener("input", updateStart);
+updateStart();
+renderAllWindows();
+
+function delay(ms){return new Promise(r=>setTimeout(r,ms));}
+
+function randomDelay(min, max){return Math.floor(Math.random() * (max - min + 1)) + min;}
+
+function animateReel(obj, stopDelay, duration, cardH){
+  return new Promise(resolve => {
+
+    const viewport = obj.reel.parentElement;
+    const winningCard = obj.reel.children[obj.finalIndex];
+
+    // Get the ACTUAL position and size of the winning card.
+    // This guarantees that it lands in the vertical center.
+    const cardTop = winningCard.offsetTop;
+    const actualCardHeight = winningCard.offsetHeight;
+
+    const centerOffset =
+      (viewport.clientHeight - actualCardHeight) / 2;
+
+    const target = -(cardTop - centerOffset);
+    const startY = 0;
+
+    const startTime = performance.now();
+
+    function frame(now){
+
+      const elapsed = now - startTime;
+      const t = Math.min(1, elapsed / duration);
+
+      let progress;
+
+      if(t < 0.82){
+
+        // FAST SPIN
+        // 82% of the animation stays very fast.
+        progress = (t / 0.82) * 0.96;
+
+      }else{
+
+        // FINAL SLOWDOWN
+        // Only the last 18% is used to brake into the result.
+        const slow =
+          (t - 0.82) / 0.18;
+
+        const easeOut =
+          1 - Math.pow(1 - slow, 4);
+
+        progress =
+          0.96 + easeOut * 0.04;
+      }
+
+      const y =
+        startY + (target - startY) * progress;
+
+      obj.reel.style.transform =
+        `translate3d(0, ${y}px, 0)`;
+
+      if(t < 1){
+
+        requestAnimationFrame(frame);
+
+      }else{
+
+        // Force the EXACT final position.
+        // This prevents rounding errors from leaving
+        // the winning card slightly off-center.
+        obj.reel.style.transform =
+          `translate3d(0, ${target}px, 0)`;
+
+        setTimeout(resolve, stopDelay);
+      }
+    }
+
+    requestAnimationFrame(frame);
+  });
+}
+
+async function spin(){
+  const startCredits=Math.max(0,Number(creditsInput.value)||0);
+
+  spinBtn.disabled=true;
+  agentSelect.disabled=true;
+  creditsInput.disabled=true;
+  message.textContent="ROLLING...";
+  
+  spinAudio.currentTime = 0;
+  spinAudio.volume = 0.9;
+  spinAudio.play();
+
+  const final=chooseResult(startCredits);
+  const utils=agents[agentSelect.value];
+
+  const wp=affordablePool(weapons,startCredits);
+  const up=affordablePool(utils,startCredits);
+  const sp=affordablePool(shields,startCredits);
+
+  // Build a real stack of cards for each wheel. The winning item is placed
+  // deep inside the stack so the wheel has plenty of visible movement.
+  const wr=buildReel(els.weapon,wp,final.w,"weapon");
+  const ur=buildReel(els.utility,up,final.u,"utility");
+  const sr=buildReel(els.shield,sp,final.s,"shield");
+
+  // Start each wheel at the top and stop them one after another.
+  [wr,ur,sr].forEach(obj=>{
+    obj.reel.style.transition="none";
+    obj.reel.style.transform="translate3d(0,0,0)";
+  });
+
+  const cardH = wr.reel.querySelector('.reel-card')?.clientHeight || (window.matchMedia("(max-width:700px)").matches ? 68 : 78);
+
+const weaponDuration = 5800 + randomDelay(100, 400);
+const utilityDuration = 5800 + randomDelay(200, 500);
+const shieldDuration = 5800 + randomDelay(300, 600);
+
+await Promise.all([
+  animateReel(wr, 0, weaponDuration, cardH),
+  animateReel(ur, 0, utilityDuration, cardH),
+  animateReel(sr, 0, shieldDuration, cardH)
+]);
+
+
+
+  // Highlight the winning cards.
+  [wr,ur,sr].forEach(obj=>{
+    const cards=obj.reel.querySelectorAll(".reel-card");
+    cards.forEach(c=>{ c.classList.remove("current"); c.classList.remove("pop"); });
+    if(cards[obj.finalIndex]){
+      const card = cards[obj.finalIndex];
+      card.classList.add("current");
+      card.classList.add("pop");
+    }
+  });
+
+  await delay(120);
+
+  els.sumWeapon.textContent=final.w.name;
+  els.sumUtility.textContent=final.u.name;
+  els.sumShield.textContent=final.s.name;
+  els.sumSpent.innerHTML=creditHtml(final.total);
+  els.sumLeft.innerHTML=creditHtml(startCredits-final.total);
+
+  els.sumLeft.className = startCredits-final.total>=0 ? "good" : "bad";
+  const chosenAgentIcon = `<img src="${agentIcon(agentSelect.value)}" alt="${agentSelect.value}" class="agent-icon" onerror="this.style.display='none'" />`;
+  message.innerHTML = `<span class="good">BUY LOCKED</span> <span>•</span> ${chosenAgentIcon} <strong>${agentSelect.value}</strong> <span>•</span> <strong>${money(final.total)} spent</strong>`;
+
+  document.querySelectorAll(".window").forEach(x=>x.classList.add("shake"));
+  setTimeout(()=>document.querySelectorAll(".window").forEach(x=>x.classList.remove("shake")),400);
+
+  spinBtn.disabled=false;
+  agentSelect.disabled=false;
+  creditsInput.disabled=false;
+}
+
+spinBtn.addEventListener("click",spin);
+</script>
+</body>
+</html>
