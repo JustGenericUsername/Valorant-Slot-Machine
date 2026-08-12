@@ -15,22 +15,17 @@ const backgroundVideos = [
   "Background/background_10.mp4"
 ];
 
-const backgroundA =
-  document.getElementById("backgroundVideoA");
-
-const backgroundB =
-  document.getElementById("backgroundVideoB");
-
-const changeBackgroundBtn =
-  document.getElementById("changeBackgroundBtn");
+const backgroundA = document.getElementById("backgroundVideoA");
+const backgroundB = document.getElementById("backgroundVideoB");
+const changeBackgroundBtn = document.getElementById("changeBackgroundBtn");
 
 let activeBackground = backgroundA;
 let inactiveBackground = backgroundB;
-
 let currentVideo = null;
+let changingBackground = false;
 
 
-// Pick a random video
+// Pick a random video that isn't the current one
 function getRandomBackground(){
 
   let video;
@@ -38,12 +33,9 @@ function getRandomBackground(){
   do {
     video =
       backgroundVideos[
-        Math.floor(
-          Math.random() * backgroundVideos.length
-        )
+        Math.floor(Math.random() * backgroundVideos.length)
       ];
-  }
-  while(
+  } while (
     backgroundVideos.length > 1 &&
     video === currentVideo
   );
@@ -52,59 +44,106 @@ function getRandomBackground(){
 }
 
 
-// Change to another random background
+// Start a video
+function playBackground(video){
+
+  video.muted = true;
+  video.loop = true;
+  video.playsInline = true;
+
+  const promise = video.play();
+
+  if(promise !== undefined){
+    promise.catch(error => {
+      console.log("Background video could not autoplay:", error);
+    });
+  }
+}
+
+
+// ================================
+// RANDOM BACKGROUND ON PAGE LOAD
+// ================================
+
+function loadInitialBackground(){
+
+  const firstVideo = getRandomBackground();
+
+  currentVideo = firstVideo;
+
+  activeBackground.src = firstVideo;
+  activeBackground.load();
+
+  activeBackground.classList.add("active");
+
+  playBackground(activeBackground);
+}
+
+
+// ================================
+// CHANGE BACKGROUND
+// ================================
+
 function changeBackground(){
+
+  // Prevent multiple clicks while switching
+  if(changingBackground) return;
+
+  changingBackground = true;
 
   const nextVideo = getRandomBackground();
 
   currentVideo = nextVideo;
 
-  // Load the new video into the hidden layer
+  // Put the new video into the hidden layer
   inactiveBackground.src = nextVideo;
   inactiveBackground.load();
 
-  inactiveBackground.currentTime = 0;
+  inactiveBackground.muted = true;
+  inactiveBackground.loop = true;
+  inactiveBackground.playsInline = true;
 
-  inactiveBackground.oncanplay = () => {
+  // Wait until the new video has enough data to start
+  const startNewVideo = () => {
 
-    // Start the new video
-    inactiveBackground.play().then(() => {
+    playBackground(inactiveBackground);
 
-      // Fade new video in
+    // Give the browser a moment to start playback
+    requestAnimationFrame(() => {
+
+      // Fade new video IN
       inactiveBackground.classList.add("active");
 
-      // Fade old video out
+      // Fade old video OUT
       activeBackground.classList.remove("active");
 
-      // Swap the two video elements
+      // Swap the video layers
       const temp = activeBackground;
-
       activeBackground = inactiveBackground;
       inactiveBackground = temp;
 
-    }).catch(() => {});
+      changingBackground = false;
+
+    });
   };
+
+  if(inactiveBackground.readyState >= 3){
+    startNewVideo();
+  }else{
+    inactiveBackground.addEventListener(
+      "canplay",
+      startNewVideo,
+      {once:true}
+    );
+  }
 }
 
 
-// ============================
-// RANDOM BACKGROUND ON LAUNCH
-// ============================
-
-const firstVideo = getRandomBackground();
-
-currentVideo = firstVideo;
-
-activeBackground.src = firstVideo;
-activeBackground.load();
-
-activeBackground.play().catch(() => {});
+// Load random background immediately
+loadInitialBackground();
 
 
-// ============================
-// REFRESH BACKGROUND BUTTON
-// ============================
-
+// Refresh button
 if(changeBackgroundBtn){
 
   changeBackgroundBtn.addEventListener(
