@@ -1234,9 +1234,23 @@ function updateStart(){
   els.sumStart.innerHTML=creditHtml(c);
 }
 
-creditsInput.addEventListener("input", updateStart);
+creditsInput.addEventListener("input", () => {
+  let value = Number(creditsInput.value);
+
+  if (value > 9000) {
+    value = 9000;
+    creditsInput.value = 9000;
+  }
+
+  if (value < 0) {
+    value = 0;
+    creditsInput.value = 0;
+  }
+
+  updateStart();
+});
+
 updateStart();
-renderAllWindows();
 
 function delay(ms){return new Promise(r=>setTimeout(r,ms));}
 
