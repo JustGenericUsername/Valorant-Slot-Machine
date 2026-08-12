@@ -15,28 +15,101 @@ const backgroundVideos = [
   "Background/background_10.mp4"
 ];
 
-const backgroundPlayer = document.getElementById("backgroundVideo");
-const changeBackgroundBtn = document.getElementById("changeBackgroundBtn");
+const backgroundA =
+  document.getElementById("backgroundVideoA");
 
-function changeBackground(){
-  const currentVideo = backgroundPlayer.dataset.currentVideo || "";
-  let randomVideo = backgroundVideos[Math.floor(Math.random() * backgroundVideos.length)];
+const backgroundB =
+  document.getElementById("backgroundVideoB");
 
-  // Avoid immediately selecting the same background when possible.
-  while(backgroundVideos.length > 1 && randomVideo === currentVideo){
-    randomVideo = backgroundVideos[Math.floor(Math.random() * backgroundVideos.length)];
+const changeBackgroundBtn =
+  document.getElementById("changeBackgroundBtn");
+
+let activeBackground = backgroundA;
+let inactiveBackground = backgroundB;
+
+let currentVideo = null;
+
+
+// Pick a random video
+function getRandomBackground(){
+
+  let video;
+
+  do {
+    video =
+      backgroundVideos[
+        Math.floor(
+          Math.random() * backgroundVideos.length
+        )
+      ];
   }
+  while(
+    backgroundVideos.length > 1 &&
+    video === currentVideo
+  );
 
-  backgroundPlayer.dataset.currentVideo = randomVideo;
-  backgroundPlayer.src = randomVideo;
-  backgroundPlayer.load();
-  backgroundPlayer.play().catch(() => {});
+  return video;
 }
 
-// Random background when the site opens.
-changeBackground();
 
-// Switch background without refreshing the page.
+// Change to another random background
+function changeBackground(){
+
+  const nextVideo = getRandomBackground();
+
+  currentVideo = nextVideo;
+
+  // Load the new video into the hidden layer
+  inactiveBackground.src = nextVideo;
+  inactiveBackground.load();
+
+  inactiveBackground.currentTime = 0;
+
+  inactiveBackground.oncanplay = () => {
+
+    // Start the new video
+    inactiveBackground.play().then(() => {
+
+      // Fade new video in
+      inactiveBackground.classList.add("active");
+
+      // Fade old video out
+      activeBackground.classList.remove("active");
+
+      // Swap the two video elements
+      const temp = activeBackground;
+
+      activeBackground = inactiveBackground;
+      inactiveBackground = temp;
+
+    }).catch(() => {});
+  };
+}
+
+
+// ============================
+// RANDOM BACKGROUND ON LAUNCH
+// ============================
+
+const firstVideo = getRandomBackground();
+
+currentVideo = firstVideo;
+
+activeBackground.src = firstVideo;
+activeBackground.load();
+
+activeBackground.play().catch(() => {});
+
+
+// ============================
+// REFRESH BACKGROUND BUTTON
+// ============================
+
 if(changeBackgroundBtn){
-  changeBackgroundBtn.addEventListener("click", changeBackground);
+
+  changeBackgroundBtn.addEventListener(
+    "click",
+    changeBackground
+  );
+
 }
