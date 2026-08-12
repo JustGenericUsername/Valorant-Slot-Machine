@@ -403,7 +403,7 @@ function money(n){ return n.toLocaleString("en-US"); }
 
 
 function creditHtml(amount){
-  return `<span class="credit-badge"><img src="Credits_icon.png" alt="Credits" class="credit-icon" />${money(amount)}</span>`;
+  return `<span class="credit-badge"><img src="Icon/Credits_icon.png" alt="Credits" class="credit-icon" />${money(amount)}</span>`;
 }
 
 function svgIcon(type, name){
@@ -574,29 +574,101 @@ function shuffle(arr){
 }
 
 function chooseResult(budget, agentName){
-  const result = {w:null,u:null,s:null,total:0};
-  let remaining = budget;
-  const order = shuffle(["weapon","utility","shield"]);
   const utilPool = getUtilityPool(agentName);
 
-  order.forEach(category => {
-    if(category === "weapon"){
-      const pool = affordablePool(weapons, remaining);
-      result.w = weightedRandom(pool);
-      remaining -= result.w.price;
-    } else if(category === "utility"){
-      const pool = affordablePool(utilPool, remaining);
-      result.u = weightedRandom(pool);
-      remaining -= result.u.price;
-    } else {
-      const pool = affordablePool(shields, remaining);
-      result.s = weightedRandom(pool);
-      remaining -= result.s.price;
+  const weaponPool = affordablePool(weapons, budget);
+  const utilityPool = affordablePool(utilPool, budget);
+  const shieldPool = affordablePool(shields, budget);
+
+  const candidates = [];
+
+  // Generate many possible valid combinations
+  for(let i = 0; i < 300; i++){
+
+    const weapon = weightedRandom(weaponPool);
+    const utility = weightedRandom(utilityPool);
+    const shield = weightedRandom(shieldPool);
+
+    const total =
+      weapon.price +
+      utility.price +
+      shield.price;
+
+    // Only keep combinations that fit the budget
+    if(total <= budget){
+      candidates.push({
+        w: weapon,
+        u: utility,
+        s: shield,
+        total: total
+      });
     }
+  }
+
+  // Fallback if no valid combination was generated
+  if(!candidates.length){
+    const weapon = weightedRandom(weaponPool);
+    const utility = weightedRandom(utilityPool);
+    const shield = weightedRandom(shieldPool);
+
+    return {
+      w: weapon,
+      u: utility,
+      s: shield,
+      total:
+        weapon.price +
+        utility.price +
+        shield.price
+    };
+  }
+
+  /*
+    Controls how much the system favors
+    higher-value purchases.
+
+    0.25 = very random
+    0.50 = balanced
+    0.75 = more expensive
+    1.00 = strongly favors maxing credits
+  */
+  const POWER = 0.5;
+
+  const weightedCandidates = candidates.map(result => {
+
+    const percentage =
+      budget > 0
+        ? result.total / budget
+        : 0;
+
+    return {
+      result: result,
+
+      weight: Math.pow(
+        percentage + 0.10,
+        POWER
+      )
+    };
   });
 
-  result.total = result.w.price + result.u.price + result.s.price;
-  return result;
+  const totalWeight =
+    weightedCandidates.reduce(
+      (sum, item) => sum + item.weight,
+      0
+    );
+
+  let random =
+    Math.random() * totalWeight;
+
+  for(const candidate of weightedCandidates){
+
+    random -= candidate.weight;
+
+    if(random <= 0){
+      return candidate.result;
+    }
+  }
+
+  return candidates[candidates.length - 1];
 }
 
 function buildReel(el, pool, final, type){
@@ -647,14 +719,36 @@ function random(arr){
 }
 
 function weightedRandom(arr){
-  if(!arr || !arr.length) return {name:"Nothing", price:0, icon:"◌"};
-  const weights = arr.map(item => Math.pow(item.price + 50, 0.75));
-  const total = weights.reduce((sum, w) => sum + w, 0);
-  let r = Math.random() * total;
-  for(let i = 0; i < arr.length; i++){
-    r -= weights[i];
-    if(r < 0) return arr[i];
+  if(!arr || !arr.length){
+    return {
+      name:"Nothing",
+      price:0,
+      icon:"◌"
+    };
   }
+
+  const weights = arr.map(item =>
+    Math.pow(item.price + 100, 0.20)
+  );
+
+  const total =
+    weights.reduce(
+      (sum, w) => sum + w,
+      0
+    );
+
+  let r =
+    Math.random() * total;
+
+  for(let i = 0; i < arr.length; i++){
+
+    r -= weights[i];
+
+    if(r < 0){
+      return arr[i];
+    }
+  }
+
   return arr[arr.length - 1];
 }
 
