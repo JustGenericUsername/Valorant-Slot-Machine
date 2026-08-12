@@ -80,6 +80,31 @@
   }
   .agent-search-box input::placeholder{color:#788493}
   .agent-search-box .dropdown-arrow{flex:0 0 auto;cursor:pointer}
+  
+  .clear-agent{
+    display:none;
+  
+    flex:0 0 auto;
+    width:24px;
+    height:24px;
+    padding:0;
+  
+    border:0;
+    background:transparent;
+  
+    color:#8b98a6;
+    font-size:22px;
+    line-height:24px;
+  
+    cursor:pointer;
+  }
+  
+  .clear-agent:hover{
+    color:#ffffff;
+    background:rgba(255,255,255,.08);
+    border-radius:5px;
+  }
+  
   .agent-dropdown{
     position:absolute;top:calc(100% + 6px);left:0;width:100%;min-width:460px;max-width:520px;max-height:360px;overflow:auto;
     background:#0c131b;border:1px solid #34414e;box-shadow:0 16px 38px rgba(0,0,0,.55);border-radius:10px;
@@ -335,6 +360,7 @@
             <input id="agentSearch" type="text" autocomplete="off" spellcheck="false"
                    placeholder="Search agent..." role="combobox" aria-autocomplete="list"
                    aria-expanded="false" aria-controls="agentDropdownMenu" />
+            <button type="button" id="clearAgent" class="clear-agent" aria-label="Clear selected agent">×</button>
             <span class="dropdown-arrow" id="agentDropdownArrow">▾</span>
           </div>
           <div class="agent-dropdown" id="agentDropdownMenu" role="listbox"></div>
@@ -636,6 +662,7 @@ const agentSearch = document.getElementById("agentSearch");
 const agentDropdownArrow = document.getElementById("agentDropdownArrow");
 const agentDropdownMenu = document.getElementById("agentDropdownMenu");
 const agentDropdownIcon = document.getElementById("agentDropdownIcon");
+const clearAgentBtn = document.getElementById("clearAgent");
 const agentDropdownLabel = document.getElementById("agentDropdownLabel");
 const agentRandomizerList = document.getElementById("agentRandomizerList");
 const selectAllAgentsBtn = document.getElementById("selectAllAgents");
@@ -694,6 +721,7 @@ function updateDropdownButton(name){
   agentDropdownIcon.alt = name;
   agentDropdownIcon.onerror = function(){ this.style.display = 'none'; };
   agentDropdownIcon.style.display = 'block';
+  clearAgentBtn.style.display = "block";
 }
 
 function buildAgentRandomizer(){
@@ -885,10 +913,34 @@ function closeAgentDropdown(){
   agentSearch.setAttribute("aria-expanded", "false");
 }
 
+function clearSelectedAgent(){
+  agentSelect.value = "";
+
+  agentSearch.value = "";
+  agentSearch.placeholder = "Search agent...";
+
+  agentDropdownIcon.src = "";
+  agentDropdownIcon.alt = "";
+  agentDropdownIcon.style.display = "none";
+
+  clearAgentBtn.style.display = "none";
+
+  closeAgentDropdown();
+
+  // Update the UI to show that no agent is selected
+  updateRandomAgentPanel();
+
+  // Refresh the wheels
+  renderAllWindows();
+}
+
 buildAgentOptions();
 buildAgentRandomizer();
-agentSelect.value = Object.keys(agents)[0];
-setSelectedAgent(agentSelect.value);
+agentSelect.value = "";
+agentSearch.value = "";
+agentSearch.placeholder = "Search agent...";
+agentDropdownIcon.style.display = "none";
+clearAgentBtn.style.display = "none";
 
 agentSearch.addEventListener("focus", () => {
   buildAgentOptions(agentSearch.value);
@@ -949,6 +1001,13 @@ document.addEventListener("click", (event) => {
 });
 
 agentSelect.addEventListener("change", () => setSelectedAgent(agentSelect.value));
+
+clearAgentBtn.addEventListener("click", (event) => {
+  event.preventDefault();
+  event.stopPropagation();
+
+  clearSelectedAgent();
+});
 
 agentRandomizerList.addEventListener("change", () => {
   const included = getIncludedAgents();
