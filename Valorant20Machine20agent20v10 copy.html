@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VALORANT Buy Slot Machine</title>
+<style>
+  :root{
+    --bg:#070b10;
+    --panel:#0d131b;
+    --panel2:#111923;
+    --line:#26313d;
+    --muted:#788493;
+    --text:#f3f5f7;
+    --accent:#75f4d1;
+    --accent2:#3de4c2;
+    --danger:#ff5c6c;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    min-height:100vh;
+    font-family:Arial,Helvetica,sans-serif;
+    background:
+      radial-gradient(circle at 50% -10%,#1a2934 0,transparent 42%),
+      linear-gradient(145deg,#070b10,#0b1118 55%,#070a0e);
+    color:var(--text);
+    display:flex;
+    justify-content:center;
+    padding:28px 16px;
+  }
+  .app{width:min(1050px,100%)}
+  .topbar{
+    display:flex;align-items:end;justify-content:space-between;gap:18px;
+    padding:18px 20px;border:1px solid var(--line);
+    background:rgba(9,14,20,.9);box-shadow:0 18px 60px #0008;
+  }
+  .brand{font-weight:900;letter-spacing:.14em;font-size:18px}
+  .sub{color:var(--muted);font-size:10px;letter-spacing:.2em;margin-top:6px}
+  .controls{display:flex;align-items:end;gap:12px;flex-wrap:wrap}
+  label{display:block;color:#84909e;font-size:10px;letter-spacing:.15em;font-weight:800;margin:0 0 6px}
+  select,input{
+    width:170px;height:42px;border:1px solid #34414e;background:#101821;color:white;
+    padding:0 12px;font-weight:800;outline:none;
+  }
+  .agent-select-wrapper{position:relative}
+  .agent-search-box{
+    min-width:460px;width:100%;height:42px;border:1px solid #34414e;background:#101821;
+    display:flex;align-items:center;gap:8px;padding:0 12px;transition:border-color .15s ease;
+  }
+  .agent-search-box:focus-within{border-color:var(--accent);box-shadow:0 0 0 1px rgba(117,244,209,.12)}
+  .agent-search-box img{width:18px;height:18px;object-fit:contain;display:block;flex:0 0 18px}
+  .agent-search-box input{
+    width:100%;height:40px;border:0;background:transparent;color:white;padding:0;
+    font-weight:800;outline:none;min-width:0;
+  }
+  .agent-search-box input::placeholder{color:#788493}
+  .agent-search-box .dropdown-arrow{flex:0 0 auto;cursor:pointer}
+  .agent-dropdown{
+    position:absolute;top:calc(100% + 6px);left:0;width:100%;min-width:460px;max-width:520px;max-height:360px;overflow:auto;
+    background:#0c131b;border:1px solid #34414e;box-shadow:0 16px 38px rgba(0,0,0,.55);border-radius:10px;
+    display:none;z-index:20;
+  }
+  .agent-dropdown.open{display:block}
+  .agent-option{
+    width:100%;display:flex;align-items:center;gap:10px;padding:10px 12px;
+    border:none;background:none;color:#f3f5f7;text-align:left;font:inherit;cursor:pointer;
+  }
+  .agent-option:hover,.agent-option.active{background:rgba(93,238,217,.08)}
+  .agent-option img{width:22px;height:22px;object-fit:contain;flex-shrink:0}
+  .agent-option .random-agent-icon{width:22px;height:22px;display:grid;place-items:center;font-size:18px;flex-shrink:0}
+  .dropdown-divider{height:1px;background:#26313d;margin:5px 0}
+  .agent-control-block{min-width:380px}
+  .agent-randomizer-standalone{
+    width:100%;
+    margin:0 0 14px;
+    border:1px solid var(--line);
+    background:rgba(9,14,20,.94);
+    box-shadow:0 18px 45px #0008;
+    padding:14px;
+  }
+  .agent-randomizer-standalone .agent-randomizer-title{
+    color:#84909e;font-size:10px;letter-spacing:.18em;font-weight:900;margin-bottom:10px;
+  }
+  .agent-randomizer{margin:0;border:0;background:transparent;padding:0;max-width:none}
+
+  .agent-randomizer-title{color:#84909e;font-size:9px;letter-spacing:.15em;font-weight:900;margin-bottom:8px}
+  .agent-randomizer-list{display:flex;flex-wrap:wrap;gap:6px 10px;overflow:visible;padding-right:3px}
+  .agent-check{display:inline-flex;align-items:center;gap:5px;color:#dce6eb;font-size:9px;font-weight:800;letter-spacing:.08em;cursor:pointer;white-space:nowrap}
+  .agent-check input{width:auto;height:auto;margin:0;accent-color:var(--accent);cursor:pointer}
+  .agent-check img{width:18px;height:18px;object-fit:contain;display:block}
+  .agent-check span{line-height:18px}
+  .agent-randomizer-actions{display:flex;gap:7px;margin-top:8px}
+  .agent-randomizer-actions button{height:26px;padding:0 9px;font-size:8px;letter-spacing:.08em;background:#101821;color:#dce6eb;border:1px solid #34414e;box-shadow:none}
+  .agent-randomizer-actions button:hover{border-color:var(--accent);filter:none}
+  .agent-roll{margin-top:10px;padding-top:10px;border-top:1px solid #26313d;display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}
+  .agent-roll-display{height:62px;border:1px solid #34414e;background:#101821;display:flex;align-items:center;justify-content:center;gap:10px;overflow:hidden}
+  .agent-roll-display img{width:34px;height:34px;object-fit:contain;flex:0 0 34px}
+  .agent-roll-name{font-size:12px;font-weight:1000;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .agent-roll-status{display:block;color:#788493;font-size:8px;letter-spacing:.12em;margin-top:3px}
+  #randomizeAgent{height:62px;padding:0 16px;font-size:9px;min-width:132px}
+  .agent-randomizer.disabled{opacity:.55}
+  .agent-randomizer.disabled .agent-check{cursor:not-allowed}
+  .agent-summary{display:inline-flex;align-items:center;gap:8px}
+  .agent-summary .agent-icon{width:22px;height:22px;object-fit:contain;flex:0 0 22px}
+  .agent-summary .summary-item-icon{width:24px;height:24px;margin:0;flex:0 0 24px}
+  button:disabled{opacity:.55;cursor:not-allowed}
+  .dropdown-arrow{color:#788493;font-size:14px;}
+  input{width:130px}
+  select:focus,input:focus{border-color:var(--accent)}
+  .hero{
+    border:1px solid var(--line);border-top:0;background:#080d13;
+  }
+  .heads,.slots,.summary{display:grid;grid-template-columns:1fr 1fr 1fr}
+  .heads>div{
+    text-align:center;padding:16px 10px 12px;border-right:1px solid var(--line);
+    color:#7d8997;font-size:11px;font-weight:900;letter-spacing:.22em;
+  }
+  .heads>div:last-child{border-right:0}
+  .slots{min-height:460px}
+  .slot{
+    position:relative;border-right:1px solid var(--line);overflow:hidden;
+    display:flex;align-items:center;justify-content:center;padding:18px;
+    background:linear-gradient(#0a1017,#0a0f15);
+    min-height:430px;
+  }
+  .slot:last-child{border-right:0}
+  .slot:before,.slot:after{display:none}
+  .window{
+    position:relative;z-index:2;width:94%;height:100%;overflow:hidden;
+    border:1px solid #26323e;background:linear-gradient(180deg,#121b24,#0c1219);
+    box-shadow:0 0 0 1px #000 inset,0 16px 40px #0008;
+  }
+  .reel{
+    position:absolute;inset:0;
+    display:flex;flex-direction:column;align-items:stretch;
+    gap:10px;
+    transform:translate3d(0,0,0);
+    will-change:transform;
+  }
+  .reel.spin{
+    filter: none;
+  }
+  .reel-card{
+    position:relative;
+    flex:0 0 132px;
+    height:132px;
+    display:flex;flex-direction:column;justify-content:center;align-items:center;
+    gap:8px;padding:16px 16px;
+    background:rgba(255,255,255,.04);
+    border:1px solid rgba(255,255,255,.06);
+    transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease, background .2s ease;
+  }
+  .reel-card.current{
+    background:linear-gradient(90deg,#131f28,#1d323f,#131f28);
+    box-shadow:0 0 0 1px rgba(93,238,217,.5), 0 18px 40px rgba(0,0,0,.35);
+    border:1px solid rgba(93,238,217,.85);
+    transform: scale(1.02);
+    z-index:2;
+  }
+  .reel-card.pop{
+    animation:pop .36s ease forwards, popGlow .18s ease 0.36s forwards;
+  }
+  .reel-card.win-glow{
+    animation:winGlow 1s ease forwards;
+  }
+  .reel-card.pop::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    border-radius:8px;
+    background:linear-gradient(135deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.18) 50%, rgba(255,255,255,0) 100%);
+    opacity:0;
+    pointer-events:none;
+    mix-blend-mode:screen;
+    animation:shine .36s ease forwards;
+  }
+  .item-image{width:76px;height:60px;margin:0 auto 6px;display:block;object-fit:contain}
+  .item-image.weapon-image{width:76px;height:60px;}
+  .item-image.shield-image{width:48px;height:48px;}
+  .ability-icon{
+    width:60px;
+    height:60px;
+    margin:0 auto 6px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--accent);
+    flex:0 0 60px;
+  }
+  .ability-icon svg{width:56px;height:56px;display:block;}
+  .item-copy{text-align:center;min-width:0;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .item-name{font-weight:1000;font-size:13px;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:0 auto}
+  .item-meta{margin-top:4px;color:#8a97a5;font-size:9px;font-weight:800;letter-spacing:.08em;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+  .credit-badge{display:inline-flex;align-items:center;gap:6px}
+  .credit-icon{width:12px;height:auto;display:block}
+  .item-detail{margin-top:6px;color:#7fe6cb;font-size:10px;font-weight:800;letter-spacing:.11em}
+  .item-bind{margin-top:4px;color:#8adfc5;font-size:9px;font-weight:800;letter-spacing:.12em}
+  .reel-card.center{
+    outline:1px solid #49616f;
+    outline-offset:-1px;
+  }
+  .result-line{
+    display:flex;justify-content:center;align-items:center;gap:12px;
+    min-height:74px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    color:#a8b4bf;font-size:12px;letter-spacing:.1em;font-weight:800;
+  }
+  .result-line strong{color:white}
+  button{
+    height:48px;padding:0 28px;border:1px solid #5af0ce;background:var(--accent);
+    color:#06100e;font-weight:1000;letter-spacing:.12em;cursor:pointer;
+    box-shadow:0 0 28px #47e4c330;text-transform:uppercase;
+  }
+  button:hover{filter:brightness(1.08)}
+  button:active{transform:translateY(1px)}
+  button:disabled{opacity:.55;cursor:not-allowed}
+  .spinrow{display:flex;justify-content:center;padding:20px;border-bottom:1px solid var(--line)}
+  .summary{
+    background:#090e14;
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+    gap:0;
+  }
+  .sum{
+    padding:14px 18px;border-right:1px solid var(--line);
+    min-height:68px;
+  }
+  .sum:last-child{border-right:0}
+  .sum b{display:block;margin-top:8px;font-size:14px}
+  .sum small{display:block;color:#707d8b;font-size:9px;font-weight:900;letter-spacing:.17em}
+  .sum .agent-summary,
+  .sum .shield-summary{display:inline-flex;align-items:center;gap:8px;}
+  .sum .agent-summary .agent-icon,
+  .sum .shield-summary .agent-icon{width:20px;height:20px;}
+  .good{color:var(--accent)}.bad{color:var(--danger)}
+  .hint{
+    padding:14px 18px;color:#6f7b87;font-size:11px;line-height:1.5;
+    border:1px solid var(--line);border-top:0;background:#090e14;
+  }
+  .agent-pill{
+    display:inline-flex;gap:8px;align-items:center;color:#dce6eb;
+    border:1px solid #2b3743;padding:6px 9px;font-size:9px;letter-spacing:.12em;
+    margin-top:8px;
+  }
+  .agent-icon{width:18px;height:18px;object-fit:contain;display:block}
+  .agent-pill span{font-size:10px;font-weight:800;letter-spacing:.11em;text-transform:none;color:#f3f5f7}
+  .pulse{animation:pulse .18s linear infinite alternate}
+  @keyframes pulse{to{filter:brightness(1.7);transform:scale(1.015)}}
+  .shake{animation:shake .16s linear 2}
+  @keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+  @keyframes pop{0%{transform:scale(1.02);box-shadow:0 0 0 1px rgba(93,238,217,.5)}50%{transform:scale(1.07);box-shadow:0 0 0 3px rgba(93,238,217,.85)}100%{transform:scale(1.05);box-shadow:0 0 0 2px rgba(93,238,217,.75)}}
+  @keyframes shine{0%{opacity:0;transform:translateX(-80px) scaleX(0.8)}50%{opacity:1;transform:translateX(0) scaleX(1)}100%{opacity:0;transform:translateX(80px) scaleX(0.8)}}
+  @keyframes popGlow{0%{filter:brightness(1)}50%{filter:brightness(1.22)}100%{filter:brightness(1)}}
+  @keyframes winGlow{0%{box-shadow:0 0 0 rgba(93,238,217,0);opacity:0.95}50%{box-shadow:0 0 24px rgba(93,238,217,0.35);opacity:1}100%{box-shadow:0 0 40px rgba(93,238,217,0.18);opacity:1}}
+  @media(max-width:700px){
+    body{padding:10px}.topbar{align-items:flex-start;flex-direction:column}
+    .controls{width:100%}.controls>div{flex:1}.controls select,.controls input{width:100%}.agent-control-block{min-width:0;width:100%}.agent-search-box{min-width:0;width:100%}.agent-dropdown{min-width:100%;max-width:none}.agent-randomizer{max-width:none}.agent-randomizer-list{max-height:220px;overflow:auto}.agent-roll{grid-template-columns:1fr}.agent-roll-display{width:100%}#randomizeAgent{width:100%}
+    .slots{min-height:350px}.window{height:205px}.reel-card{flex-basis:68px;height:68px;padding:8px 10px}.icon{width:48px;flex-basis:48px}.icon svg{width:43px;height:39px}
+    .item-name{font-size:12px}.heads>div{font-size:9px}.sum{padding:11px 8px}.sum b{font-size:11px}
+    button{width:100%}
+  }
+</style>
+</head>
+<body>
+<audio id="spinAudio" src="spin-music.mp3" preload="auto"></audio>
+<audio id="agentSpinAudio" src="agent_spin.mp3" preload="auto"></audio>
+<div class="app">
+  <section class="agent-randomizer-standalone" id="agentRandomizerPanel">
+    <div class="agent-randomizer">
+      <div class="agent-randomizer-title">AGENT RANDOMIZER // SELECT YOUR UNLOCKED AGENTS</div>
+      <div class="agent-randomizer-list" id="agentRandomizerList"></div>
+      <div class="agent-randomizer-actions">
+        <button type="button" id="selectAllAgents">SELECT ALL</button>
+        <button type="button" id="clearAllAgents">CLEAR ALL</button>
+      </div>
+      <div class="agent-roll" id="agentRollPanel">
+        <div class="agent-roll-display">
+          <img id="agentRollIcon" src="" alt="" style="display:none" />
+          <div>
+            <div class="agent-roll-name" id="agentRollName">READY TO RANDOMIZE</div>
+            <span class="agent-roll-status" id="agentRollStatus">THIS ROLL CHANGES THE AGENT DROPDOWN ABOVE</span>
+          </div>
+        </div>
+        <button type="button" id="randomizeAgent">RANDOMIZE AGENT</button>
+      </div>
+    </div>
+  </section>
+
+
+  <div class="topbar">
+    <div>
+      <div class="brand">BUY // SLOT MACHINE</div>
+      <div class="sub">RANDOMIZED VALORANT BUY GENERATOR</div>
+    </div>
+    <div class="controls">
+      <div class="agent-control-block">
+        <label>AGENT</label>
+        <div class="agent-select-wrapper">
+          <div class="agent-search-box">
+            <img src="" alt="" class="agent-icon" id="agentDropdownIcon" />
+            <input id="agentSearch" type="text" autocomplete="off" spellcheck="false"
+                   placeholder="Search agent..." role="combobox" aria-autocomplete="list"
+                   aria-expanded="false" aria-controls="agentDropdownMenu" />
+            <span class="dropdown-arrow" id="agentDropdownArrow">▾</span>
+          </div>
+          <div class="agent-dropdown" id="agentDropdownMenu" role="listbox"></div>
+        </div>
+        <select id="agent" hidden></select>
+      </div>
+      <div>
+        <label>CREDITS</label>
+        <input id="credits" type="number" min="0" max="9000" step="50" value="800">
+      </div>
+    </div>
+  </div>
+
+  <section class="hero">
+    <div class="heads">
+      <div>WEAPON</div><div>UTILITY</div><div>SHIELD</div>
+    </div>
+
+    <div class="slots">
+      <div class="slot"><div class="window" id="weaponWindow"></div></div>
+      <div class="slot"><div class="window" id="utilityWindow"></div></div>
+      <div class="slot"><div class="window" id="shieldWindow"></div></div>
+    </div>
+
+    <div class="result-line">
+      <span>READY</span>
+      <span>•</span>
+      <strong id="message">Set your agent and credits, then spin.</strong>
+    </div>
+
+    <div class="spinrow">
+      <button id="spin">SPIN BUY</button>
+    </div>
+
+    <div class="summary">
+      <div class="sum"><small>WEAPON</small><b id="sumWeapon">—</b></div>
+      <div class="sum"><small>UTILITY</small><b id="sumUtility">—</b></div>
+      <div class="sum"><small>SHIELD</small><b id="sumShield">—</b></div>
+      <div class="sum"><small>AGENT</small><b id="sumAgent">—</b></div>
+      <div class="sum"><small>START</small><b id="sumStart">—</b></div>
+      <div class="sum"><small>SPENT</small><b id="sumSpent">—</b></div>
+      <div class="sum"><small>LEFT</small><b id="sumLeft">—</b></div>
+    </div>
+  </section>
+
+  <div class="hint">
+    The generator always filters out combinations that exceed your available credits.
+  </div>
+</div>
+
+<script>
+/*
+  EDITABLE DATA
+  The prices are kept here intentionally so this is a completely standalone file.
+*/
+const weapons = [
+  {name:"Classic", price:0, icon:"◎", type:"Pistol"},
+  {name:"Shorty", price:300, icon:"▰", type:"Shotgun"},
+  {name:"Frenzy", price:450, icon:"▰", type:"Pistol"},
+  {name:"Ghost", price:500, icon:"◈", type:"Pistol"},
+  {name:"Sheriff", price:800, icon:"◆", type:"Pistol"},
+  {name:"Bandit", price:600, icon:"▰", type:"Pistol"},
+  {name:"Stinger", price:1100, icon:"▰", type:"SMG"},
+  {name:"Spectre", price:1600, icon:"▰", type:"SMG"},
+  {name:"Bucky", price:850, icon:"▰", type:"Shotgun"},
+  {name:"Judge", price:1850, icon:"▰", type:"Shotgun"},
+  {name:"Bulldog", price:2050, icon:"▰", type:"Rifle"},
+  {name:"Guardian", price:2250, icon:"▰", type:"Rifle"},
+  {name:"Phantom", price:2900, icon:"▰", type:"Rifle"},
+  {name:"Vandal", price:2900, icon:"▰", type:"Rifle"},
+  {name:"Marshal", price:950, icon:"▰", type:"Sniper"},
+  {name:"Outlaw", price:2400, icon:"▰", type:"Sniper"},
+  {name:"Operator", price:4700, icon:"▰", type:"Sniper"},
+  {name:"Ares", price:1600, icon:"▰", type:"LMG"},
+  {name:"Odin", price:3200, icon:"▰", type:"LMG"}
+];
+
+const shields = [
+  {name:"Nothing", price:0, icon:"◌", type:"None"},
+  {name:"Light Shields", price:400, icon:"◒", type:"Armor"},
+  {name:"Regen Shield", price:650, icon:"⟳", type:"Armor"},
+  {name:"Heavy Shields", price:1000, icon:"◉", type:"Armor"}
+];
+
+const agents = {
+  Astra: [
+    {name:"Stars (x2)", price:150,bind:"X", icon:"Abilities/Stars.png"},
+    {name:"Stars (x3)", price:300,bind:"X", icon:"Abilities/Stars.png"},
+    {name:"Stars (x4)", price:450,bind:"X", icon:"Abilities/Stars.png"},
+    {name:"Stars (x5)", price:600,bind:"X", icon:"Abilities/Stars.png"}
+  ],
+  Breach: [
+    {name:"Aftershock", price:200, bind:"C", icon:"Abilities/Aftershock.png"},
+    {name:"Flashpoint", price:250, bind:"Q", icon:"Abilities/Flashpoint.png"},
+    {name:"Flashpoint (x2)", price:500, bind:"Q", icon:"Abilities/Flashpoint.png"},
+    {name:"Full Util", price:700, bind:"X", icon:"Abilities/BreachUlt.png"}
+  ],
+  Brimstone: [
+    {name:"Incendiary", price:250, bind:"Q", icon:"Abilities/Incendiary.png"},
+    {name:"Sky Smoke", price:0, bind:"E", icon:"Abilities/Sky_Smoke.png"},
+    {name:"Sky Smoke (x2)", price:100, bind:"E", icon:"Abilities/Sky_Smoke.png"},
+    {name:"Sky Smoke (x3)", price:200, bind:"E", icon:"Abilities/Sky_Smoke.png"},
+    {name:"Stim Beacon", price:200, bind:"C", icon:"Abilities/Stim_Beacon.png"},
+    {name:"Full Util", price:650, bind:"X", icon:"Abilities/BrimstoneUlt.png"}
+  ],
+  Chamber: [
+    {name:"Trademark", price:200, bind:"C", icon:"Abilities/Trademark.png"},
+    {name:"Headhunter (x4)", price:400, bind:"Q", icon:"Abilities/Headhunter.png"},
+    {name:"Headhunter (FULL)", price:800, bind:"Q", icon:"Abilities/Headhunter.png"},
+    {name:"Full Util", price:1000, bind:"X", icon:"Abilities/ChamberUlt.png"}
+    
+  ],
+  Clove: [
+    {name:"Meddle", price:250, bind:"Q", icon:"Abilities/Meddle.png"},
+    {name:"Ruse", price:150, bind:"E", icon:"Abilities/Ruse.png"},
+    {name:"Pick-Me-Up", price:200, bind:"C", icon:"Abilities/Pick-me-up.png"},
+    {name:"Full Util", price:600, bind:"X", icon:"Abilities/CloveUlt.png"}
+  ],
+  Cypher: [
+    {name:"Trapwire", price:200, bind:"C", icon:"Abilities/Trapwire.png"},
+    {name:"Trapwire (x2)", price:400, bind:"C", icon:"Abilities/Trapwire.png"},
+    {name:"Cyber Cage", price:100, bind:"Q", icon:"Abilities/Cyber_Cage.png"},
+    {name:"Cyber Cage (x2)", price:200, bind:"Q", icon:"Abilities/Cyber_Cage.png"},
+    {name:"Full Util", price:600, bind:"X", icon:"Abilities/CypherUlt.png"}
+  ],
+  Deadlock: [
+    {name:"Sonic Sensor", price:200, bind:"Q", icon:"Abilities/Sonic_Sensor.png"},
+    {name:"Sonic Sensor (x2)", price:400, bind:"Q", icon:"Abilities/Sonic_Sensor.png"},
+    {name:"Barrier Mesh", price:300, bind:"C", icon:"Abilities/Barrier_Mesh.png"},
+    {name:"Full Util", price:700, bind:"X", icon:"Abilities/DeadlockUlt.png"}
+  ],
+  Fade: [
+    {name:"Prowler", price:250, bind:"C", icon:"Abilities/Prowler.png"},
+    {name:"Prowler (x2)", price:500, bind:"C", icon:"Abilities/Prowler.png"},
+    {name:"Seize", price:200, bind:"Q", icon:"Abilities/Seize.png"},
+    {name:"Full Util", price:700, bind:"X", icon:"Abilities/FadeUlt.png"}
+  ],
+  Gekko: [
+    {name:"Full Util", price:550, bind:"X", icon:"Abilities/GekkoUlt.png"},
+    {name:"Mosh Pit", price:250, bind:"C", icon:"Abilities/Mosh_Pit.png"},
+    {name:"Wingman", price:300, bind:"Q", icon:"Abilities/Wingman.png"}
+  ],
+  Harbor: [
+    {name:"Storm Surge", price:200, bind:"C", icon:"Abilities/Storm_Surge.png"},
+    {name:"Full Util", price:500, bind:"X", icon:"Abilities/HarborUlt.png"},
+    {name:"High Tide", price:300, bind:"Q", icon:"Abilities/High_Tide.png"}
+  ],
+  Iso: [
+    {name:"Contingency", price:200, bind:"C", icon:"Abilities/Contingency.png"},
+    {name:"Undercut", price:300, bind:"Q", icon:"Abilities/Undercut.png"},
+    {name:"Full Util", price:500, bind:"X", icon:"Abilities/IsoUlt.png"}
+  ],
+  Jett: [
+    {name:"Cloudburst", price:200, bind:"C", icon:"Abilities/Cloudburst.png"},
+    {name:"Cloudburst (x2)", price:400, bind:"C", icon:"Abilities/Cloudburst.png"},
+    {name:"Updraft", price:150, bind:"Q", icon:"Abilities/Updraft.png"},
+    {name:"Full Util", price:550, bind:"X", icon:"Abilities/JettUlt.png"}
+  ],
+  "KAY/O": [
+    {name:"FRAG/ment", price:200, bind:"C", icon:"Abilities/FRAG-ment.png"},
+    {name:"FLASH/drive", price:250, bind:"Q", icon:"Abilities/FLASH-drive.png"},
+    {name:"FLASH/drive (x2)", price:500, bind:"Q", icon:"Abilities/FLASH-drive.png"},
+    {name:"FULL/util", price:700, bind:"X", icon:"Abilities/KayoUlt.png"}
+  ],
+  Killjoy: [
+    {name:"Alarmbot", price:200, bind:"Q", icon:"Abilities/Alarmbot.png"},
+    {name:"Full Util", price:600, bind:"X", icon:"Abilities/KilljoyUlt.png"},
+    {name:"Nanoswarm", price:200, bind:"C", icon:"Abilities/Nanoswarm.png"},
+    {name:"Nanoswarm (x2)", price:400, bind:"C", icon:"Abilities/Nanoswarm.png"}
+  ],
+  Miks: [
+    {name:"M-Pulse", price:250, bind:"C", icon:"Abilities/M-Pulse.png"},
+    {name:"M-Pulse (x2)", price:500, bind:"C", icon:"Abilities/M-Pulse.png"},
+    {name:"Harmonize", price:200, bind:"Q", icon:"Abilities/Harmonize.png"},
+    {name:"Full Util", price:700, bind:"X", icon:"Abilities/MiksUlt.png"}
+  ],
+  Neon: [
+    {name:"Fast Lane", price:300, bind:"C", icon:"Abilities/Fast_Lane.png"},
+    {name:"Relay Bolt", price:200, bind:"Q", icon:"Abilities/Relay_Bolt.png"},
+    {name:"Full Util", price:500, bind:"X", icon:"Abilities/NeonUlt.png"}
+  ],
+  Omen: [
+    {name:"Shrouded Step", price:100, bind:"C", icon:"Abilities/Shrouded_Step.png"},
+    {name:"Shrouded Step (x2)", price:200, bind:"C", icon:"Abilities/Shrouded_Step.png"},
+    {name:"Paranoia", price:250, bind:"Q", icon:"Abilities/Paranoia.png"},
+    {name:"Dark Cover", price:150,  bind:"E", icon:"Abilities/Dark_Cover.png"},
+    {name:"Full Util", price:600,  bind:"X", icon:"Abilities/OmenUlt.png"}
+  ],
+  Phoenix: [
+    {name:"Blaze", price:150, bind:"C", icon:"Abilities/Blaze.png"},
+    {name:"Curveball", price:250, bind:"E", icon:"Abilities/Curveball.png"},
+    {name:"Hot Hands", price:200, bind:"Q", icon:"Abilities/Hot_Hands.png"},
+    {name:"Full Util", price:600, bind:"X", icon:"Abilities/PhoenixUlt.png"}
+  ],
+  Raze: [
+    {name:"Full Util", price:700, bind:"X", icon:"Abilities/RazeUlt.png"},
+    {name:"Blast Pack", price:200, bind:"Q", icon:"Abilities/Blast_Pack.png"},
+    {name:"Blast Pack (x2)", price:400, bind:"Q", icon:"Abilities/Blast_Pack.png"},
+    {name:"Boom Bot", price:300, bind:"C", icon:"Abilities/Boom_Bot.png"}
+  ],
+  Reyna: [
+    {name:"Dismiss/Devour", price:200, bind:"E/Q", icon:"Abilities/Dismiss.png"},
+    {name:"Leer", price:250, bind:"C", icon:"Abilities/Leer.png"},
+    {name:"Leer (x2)", price:500, bind:"C", icon:"Abilities/Leer.png"},
+    {name:"Full Util", price:700, bind:"C", icon:"Abilities/ReynaUlt.png"}
+    
+  ],
+  Sage: [
+    {name:"Barrier Orb", price:300, bind:"C", icon:"Abilities/Barrier_Orb.png"},
+    {name:"Slow Orb", price:200, bind:"Q", icon:"Abilities/Slow_Orb.png"},
+    {name:"Slow Orb (x2)", price:400, bind:"Q", icon:"Abilities/Slow_Orb.png"},
+    {name:"Full Util", price:700, bind:"X", icon:"Abilities/SageUlt.png"}
+  ],
+  Skye: [
+    {name:"Trailblazer", price:300, bind:"Q", icon:"Abilities/Trailblazer.png"},
+    {name:"Guiding Light", price:250, bind:"E", icon:"Abilities/Guiding_Light.png"},
+    {name:"Regrowth", price:150, bind:"C", icon:"Abilities/Regrowth.png"},
+    {name:"Full Util", price:700, bind:"X", icon:"Abilities/SkyeUlt.png"}
+  ],
+  Sova: [
+    {name:"Shock Bolt", price:150, bind:"Q", icon:"Abilities/Shock_Bolt.png"},
+    {name:"Shock Bolt (x2)", price:300, bind:"Q", icon:"Abilities/Shock_Bolt.png"},
+    {name:"Full Util", price:700, bind:"X", icon:"Abilities/SovaUlt.png"},
+    {name:"Owl Drone", price:400, bind:"C", icon:"Abilities/Dark_Cover.png"}
+  ],
+  Tejo: [
+    {name:"Stealth Drone", price:400, bind:"C", icon:"Abilities/Stealth_Drone.png"},
+    {name:"Special Delivery", price:200, bind:"Q", icon:"Abilities/Special_Delivery.png"},
+    {name:"Full Util", price:600, bind:"X", icon:"Abilities/TejoUlt.png"}
+  ],
+  Veto: [
+    {name:"Crosscut", price:200, bind:"C", icon:"Abilities/Crosscut.png"},
+    {name:"Crosscut (x2)", price:400, bind:"C", icon:"Abilities/Crosscut.png"},
+    {name:"Chokehold", price:100, bind:"Q", icon:"Abilities/Chokehold.png"},
+    {name:"Full Util", price:500, bind:"X", icon:"Abilities/VetoUlt.png"}
+  ],
+  Viper: [
+    {name:"Snake Bite", price:300, bind:"E", icon:"Abilities/Snake_Bite.png"},
+    {name:"Poison Cloud", price:200, bind:"Q", icon:"Abilities/Poison_Cloud.png"},
+    {name:"Full Util", price:500, bind:"X", icon:"Abilities/ViperUlt.png"}
+  ],
+  Vyse: [
+    {name:"Razorvine", price:150, bind:"C", icon:"Abilities/Razorvine.png"},
+    {name:"Razorvine (x2)", price:300, bind:"C", icon:"Abilities/Razorvine.png"},
+    {name:"Shear", price:200, bind:"Q", icon:"Abilities/Shear.png"},
+    {name:"Full Util", price:500, bind:"X", icon:"Abilities/VyseUlt.png"}
+  ],
+  Waylay: [
+    {name:"Saturate", price:300, bind:"C", icon:"Abilities/Saturate.png"},
+    {name:"Lightspeed", price:300, bind:"Q", icon:"Abilities/Lightspeed.png"},
+    {name:"Full Util", price:600, bind:"X", icon:"Abilities/WaylayUlt.png"}
+  ],
+  Yoru: [
+    {name:"Fakeout", price:200, bind:"C", icon:"Abilities/Fakeout.png"},
+    {name:"Gatecrash", price:150, bind:"E", icon:"Abilities/Gatecrash.png"},
+    {name:"Blindside", price:250, bind:"Q", icon:"Abilities/Blindside.png"},
+    {name:"Full Util", price:600, bind:"Q", icon:"Abilities/YoruUlt.png"}
+  ]
+};
+
+const agentSelect = document.getElementById("agent");
+const agentSearch = document.getElementById("agentSearch");
+const agentDropdownArrow = document.getElementById("agentDropdownArrow");
+const agentDropdownMenu = document.getElementById("agentDropdownMenu");
+const agentDropdownIcon = document.getElementById("agentDropdownIcon");
+const agentDropdownLabel = document.getElementById("agentDropdownLabel");
+const agentRandomizerList = document.getElementById("agentRandomizerList");
+const selectAllAgentsBtn = document.getElementById("selectAllAgents");
+const clearAllAgentsBtn = document.getElementById("clearAllAgents");
+const agentRandomizerPanel = document.getElementById("agentRandomizerPanel");
+const randomizeAgentBtn = document.getElementById("randomizeAgent");
+const agentRollIcon = document.getElementById("agentRollIcon");
+const agentRollName = document.getElementById("agentRollName");
+const agentRollStatus = document.getElementById("agentRollStatus");
+const creditsInput = document.getElementById("credits");
+const spinBtn = document.getElementById("spin");
+const message = document.getElementById("message");
+const spinAudio = document.getElementById("spinAudio");
+const agentSpinAudio = document.getElementById("agentSpinAudio");
+
+const els = {
+  weapon:document.getElementById("weaponWindow"),
+  utility:document.getElementById("utilityWindow"),
+  shield:document.getElementById("shieldWindow"),
+  sumWeapon:document.getElementById("sumWeapon"),
+  sumUtility:document.getElementById("sumUtility"),
+  sumShield:document.getElementById("sumShield"),
+  sumAgent:document.getElementById("sumAgent"),
+  sumStart:document.getElementById("sumStart"),
+  sumSpent:document.getElementById("sumSpent"),
+  sumLeft:document.getElementById("sumLeft")
+};
+
+let currentVisible = {
+  weapon: weapons[0],
+  utility: null,
+  shield: shields[0]
+};
+
+let lastRandomAgent = null;
+let randomAgentReady = false;
+let randomAgentSpinning = false;
+
+function sanitizeAgentName(name){
+  return String(name).replace(/[^A-Za-z0-9]/g,"");
+}
+
+function agentIcon(name){
+  return `Agents/${encodeURIComponent(sanitizeAgentName(name))}_icon.png`;
+}
+
+function getUtilityPool(agentName){
+  return (agents[agentName] || agents[Object.keys(agents)[0]]).filter(item => item.bind !== "X");
+}
+
+function updateDropdownButton(name){
+  agentSearch.value = name;
+  agentSearch.setAttribute("aria-expanded", "false");
+
+  agentDropdownIcon.src = agentIcon(name);
+  agentDropdownIcon.alt = name;
+  agentDropdownIcon.onerror = function(){ this.style.display = 'none'; };
+  agentDropdownIcon.style.display = 'block';
+}
+
+function buildAgentRandomizer(){
+  agentRandomizerList.innerHTML = "";
+
+  Object.keys(agents).forEach(name => {
+    const label = document.createElement("label");
+    label.className = "agent-check";
+    label.innerHTML = `
+      <input type="checkbox" value="${name}" checked />
+      <img src="${agentIcon(name)}" alt="${name}" onerror="this.style.display='none'" />
+      <span>${name}</span>
+    `;
+    agentRandomizerList.appendChild(label);
+  });
+}
+
+function getIncludedAgents(){
+  return Array.from(agentRandomizerList.querySelectorAll('input[type="checkbox"]:checked'))
+    .map(input => input.value)
+    .filter(name => Object.prototype.hasOwnProperty.call(agents, name));
+}
+
+function updateRandomAgentPanel(){
+  randomizeAgentBtn.disabled = randomAgentSpinning;
+
+  if(lastRandomAgent && randomAgentReady){
+    agentRollIcon.src = agentIcon(lastRandomAgent);
+    agentRollIcon.alt = lastRandomAgent;
+    agentRollIcon.style.display = "block";
+    agentRollIcon.onerror = function(){ this.style.display = "none"; };
+    agentRollName.textContent = lastRandomAgent;
+    agentRollStatus.textContent = "AGENT SELECTED — DROPDOWN UPDATED ABOVE";
+  }else if(!randomAgentSpinning){
+    agentRollIcon.style.display = "none";
+    agentRollName.textContent = "READY TO RANDOMIZE";
+    agentRollStatus.textContent = "THIS ROLL CHANGES THE AGENT DROPDOWN ABOVE";
+  }
+}
+
+function randomizeAgent(){
+  if(randomAgentSpinning) return;
+
+  const included = getIncludedAgents();
+  if(!included.length){
+    message.textContent = "Select at least one agent for the randomizer.";
+    return;
+  }
+
+  randomAgentSpinning = true;
+  randomAgentReady = false;
+  randomizeAgentBtn.disabled = true;
+  spinBtn.disabled = true;
+  agentSearch.disabled = true;
+  creditsInput.disabled = true;
+  message.textContent = "ROLLING AGENT...";
+  agentRollStatus.textContent = "CHOOSING FROM YOUR UNLOCKED AGENTS";
+
+  const finalAgent = included[Math.floor(Math.random() * included.length)];
+  const sequence = [];
+  for(let i=0;i<14;i++) sequence.push(included[Math.floor(Math.random()*included.length)]);
+  sequence.push(finalAgent);
+
+  // AGENT RANDOMIZER SPIN LENGTH: change 3000 to the number of milliseconds you want.
+  // 3000 = roughly 3 seconds.
+  const duration = 4350;
+  const start = performance.now();
+
+  // Play the separate agent-randomizer audio.
+  if(agentSpinAudio){
+    agentSpinAudio.currentTime = 0;
+    agentSpinAudio.volume = 1.0;
+    agentSpinAudio.loop = false;
+    agentSpinAudio.play().catch(() => {});
+  }
+  const tickCount = sequence.length;
+  let lastTick = -1;
+
+  function frame(now){
+    const t = Math.min(1, (now - start) / duration);
+    const eased = 1 - Math.pow(1 - t, 3);
+    const index = Math.min(tickCount - 1, Math.floor(eased * tickCount));
+
+    if(index !== lastTick){
+      lastTick = index;
+      const name = sequence[index];
+      agentRollIcon.src = agentIcon(name);
+      agentRollIcon.alt = name;
+      agentRollIcon.style.display = "block";
+      agentRollIcon.onerror = function(){ this.style.display = "none"; };
+      agentRollName.textContent = name;
+    }
+
+    if(t < 1){
+      requestAnimationFrame(frame);
+    }else{
+      if(agentSpinAudio){
+        agentSpinAudio.pause();
+        agentSpinAudio.currentTime = 0;
+        agentSpinAudio.loop = false;
+      }
+
+      lastRandomAgent = finalAgent;
+      randomAgentReady = true;
+      randomAgentSpinning = false;
+
+      // The agent randomizer is independent of the buy wheels.
+      // Its only permanent result is updating the normal agent dropdown.
+      setSelectedAgent(finalAgent, true);
+
+      agentSearch.disabled = false;
+      creditsInput.disabled = false;
+      spinBtn.disabled = false;
+      updateRandomAgentPanel();
+
+      message.innerHTML = `<span class="good">AGENT SELECTED</span> <span>•</span> <span class="agent-summary"><img src="${agentIcon(finalAgent)}" alt="${finalAgent}" class="agent-icon" onerror="this.style.display='none'" /><strong>${finalAgent}</strong></span> <span>•</span> <span>READY TO SPIN BUY</span>`;
+    }
+  }
+
+  requestAnimationFrame(frame);
+}
+
+function getPreviewAgent(){
+  return agentSelect.value || Object.keys(agents)[0];
+}
+
+function buildAgentOptions(filter = ""){
+  agentSelect.innerHTML = "";
+  agentDropdownMenu.innerHTML = "";
+
+  const query = String(filter).trim().toLowerCase();
+
+  Object.keys(agents).forEach(name => {
+    const opt = document.createElement("option");
+    opt.value = name;
+    opt.textContent = name;
+    agentSelect.appendChild(opt);
+
+    if(query && !name.toLowerCase().includes(query)) return;
+
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "agent-option";
+    button.dataset.agent = name;
+    button.setAttribute("role", "option");
+    button.innerHTML = `<img src="${agentIcon(name)}" alt="${name}" onerror="this.style.display='none'" /><span>${name}</span>`;
+    agentDropdownMenu.appendChild(button);
+  });
+
+  Array.from(agentDropdownMenu.querySelectorAll(".agent-option")).forEach(item => {
+    item.classList.toggle("active", item.dataset.agent === agentSelect.value);
+  });
+}
+
+function setSelectedAgent(name, fromRandomizer = false){
+  agentSelect.value = name;
+
+  if(fromRandomizer){
+    lastRandomAgent = name;
+    randomAgentReady = true;
+  }else{
+    lastRandomAgent = null;
+    randomAgentReady = false;
+  }
+
+  updateDropdownButton(name);
+  renderAllWindows();
+  updateStart();
+  updateRandomAgentPanel();
+
+  const iconHtml = `<img src="${agentIcon(name)}" alt="${name}" class="agent-icon" onerror="this.style.display='none'" />`;
+  els.sumAgent.innerHTML = `<span class="agent-summary">${iconHtml}<span>${name}</span></span>`;
+
+  Array.from(agentDropdownMenu.querySelectorAll(".agent-option")).forEach(item => {
+    item.classList.toggle("active", item.dataset.agent === name);
+  });
+}
+
+function toggleAgentDropdown(){
+  const open = agentDropdownMenu.classList.toggle("open");
+  agentSearch.setAttribute("aria-expanded", open ? "true" : "false");
+  if(open){
+    buildAgentOptions("");
+  }
+}
+
+function closeAgentDropdown(){
+  agentDropdownMenu.classList.remove("open");
+  agentSearch.setAttribute("aria-expanded", "false");
+}
+
+buildAgentOptions();
+buildAgentRandomizer();
+agentSelect.value = Object.keys(agents)[0];
+setSelectedAgent(agentSelect.value);
+
+agentSearch.addEventListener("focus", () => {
+  buildAgentOptions(agentSearch.value);
+  agentDropdownMenu.classList.add("open");
+  agentSearch.setAttribute("aria-expanded", "true");
+  requestAnimationFrame(() => agentSearch.select());
+});
+
+agentSearch.addEventListener("input", () => {
+  const query = agentSearch.value.trim().toLowerCase();
+  buildAgentOptions(query);
+  agentDropdownMenu.classList.add("open");
+  agentSearch.setAttribute("aria-expanded", "true");
+
+  const exact = Object.keys(agents).find(name => name.toLowerCase() === query);
+  if(exact){
+    setSelectedAgent(exact);
+    agentSearch.setSelectionRange(agentSearch.value.length, agentSearch.value.length);
+  }
+});
+
+agentSearch.addEventListener("keydown", (event) => {
+  const options = Array.from(agentDropdownMenu.querySelectorAll(".agent-option"));
+  if(event.key === "Escape"){
+    closeAgentDropdown();
+    updateDropdownButton(agentSelect.value);
+    return;
+  }
+  if(event.key === "Enter"){
+    event.preventDefault();
+    const first = options[0];
+    if(first){
+      setSelectedAgent(first.dataset.agent);
+      closeAgentDropdown();
+    }
+  }
+  if(event.key === "ArrowDown" && options.length){
+    event.preventDefault();
+    options[0].focus();
+  }
+});
+
+agentDropdownArrow.addEventListener("click", (event) => {
+  event.stopPropagation();
+  toggleAgentDropdown();
+});
+
+agentDropdownMenu.addEventListener("click", (event) => {
+  const option = event.target.closest(".agent-option");
+  if (!option) return;
+  setSelectedAgent(option.dataset.agent);
+  closeAgentDropdown();
+  agentSearch.blur();
+});
+
+document.addEventListener("click", (event) => {
+  if(!event.target.closest(".agent-select-wrapper")) closeAgentDropdown();
+});
+
+agentSelect.addEventListener("change", () => setSelectedAgent(agentSelect.value));
+
+agentRandomizerList.addEventListener("change", () => {
+  const included = getIncludedAgents();
+
+  if(lastRandomAgent && !included.includes(lastRandomAgent)){
+    randomAgentReady = false;
+    lastRandomAgent = null;
+    updateRandomAgentPanel();
+  }
+});
+
+randomizeAgentBtn.addEventListener("click", randomizeAgent);
+
+selectAllAgentsBtn.addEventListener("click", () => {
+  agentRandomizerList.querySelectorAll('input[type="checkbox"]').forEach(input => input.checked = true);
+  updateRandomAgentPanel();
+});
+
+clearAllAgentsBtn.addEventListener("click", () => {
+  agentRandomizerList.querySelectorAll('input[type="checkbox"]').forEach(input => input.checked = false);
+  updateRandomAgentPanel();
+});
+
+function money(n){ return n.toLocaleString("en-US"); }
+
+
+function creditHtml(amount){
+  return `<span class="credit-badge"><img src="Credits_icon.png" alt="Credits" class="credit-icon" />${money(amount)}</span>`;
+}
+
+function svgIcon(type, name){
+  const safe = String(name).replace(/[^a-z0-9]/gi,"").toLowerCase();
+  if(type==="weapon"){
+    const long = /operator|marshal|outlaw|ares|odin|bulldog|guardian|phantom|vandal/.test(safe);
+    const shotgun = /shorty|bucky|judge/.test(safe);
+    const pistol = /classic|frenzy|ghost|sheriff/.test(safe);
+    const barrel = long ? 31 : shotgun ? 25 : pistol ? 20 : 24;
+    return `<svg viewBox="0 0 120 60" aria-hidden="true">
+      <path d="M8 27h${barrel}l8-8h18l8 5h28l8-7h13l5 6-7 7H72l-10 9H43l-4-7H23l-7 5H8z" fill="currentColor" opacity=".92"/>
+      <path d="M48 34l8 2-5 15H40zM83 28l10 3-7 15H75z" fill="currentColor" opacity=".75"/>
+      <circle cx="21" cy="30" r="3" fill="#071018"/><path d="M70 20h12" stroke="#071018" stroke-width="2"/>
+    </svg>`;
+  }
+  if(type==="shield"){
+    return `<svg viewBox="0 0 80 80" aria-hidden="true">
+      <path d="M40 7l27 10v20c0 18-11 29-27 37C24 66 13 55 13 37V17z" fill="none" stroke="currentColor" stroke-width="5"/>
+      <path d="M40 19l15 6v12c0 10-5 17-15 23-10-6-15-13-15-23V25z" fill="currentColor" opacity=".18"/>
+      <path d="M40 24v31M25 39h30" stroke="currentColor" stroke-width="4" opacity=".7"/>
+    </svg>`;
+  }
+  const symbols = {
+    "paint shells":"✺","blast pack":"▣","boom bot":"◉","cloudburst":"☁","updraft":"↟",
+    "tailwind":"➜","shock bolt":"ϟ","recon bolt":"⌁","owl drone":"◉","shrouded step":"✦",
+    "paranoia":"◈","dark cover":"●","barrier orb":"▥","slow orb":"❄","healing orb":"✚",
+    "dizzy":"◉","mosh pit":"✹","wingman":"◒","nothing":"◌"
+  };
+  const sym = symbols[safe.replace(/([a-z])([a-z])/g,"$1$2")] || "✦";
+  return `<svg viewBox="0 0 80 80" aria-hidden="true">
+    <circle cx="40" cy="40" r="29" fill="none" stroke="currentColor" stroke-width="3" opacity=".55"/>
+    <circle cx="40" cy="40" r="20" fill="currentColor" opacity=".12"/>
+    <text x="40" y="51" text-anchor="middle" font-size="28" font-family="Arial" fill="currentColor">${sym}</text>
+  </svg>`;
+}
+
+function weaponImage(name){
+  return `Guns/${encodeURIComponent(name)}.png`;
+}
+
+function shieldImage(name){
+  const map = {
+    "light shields": "Light_Armor.png",
+    "heavy shields": "Heavy_Armor.png",
+    "regen shield": "Regen_Shield.png"
+  };
+  const file = map[String(name).trim().toLowerCase()] || `${encodeURIComponent(String(name).trim().replace(/\s+/g, "_"))}.png`;
+  return `Shields/${file}`;
+}
+
+function utilityImageCandidates(name){
+  const raw = String(name).trim();
+  const variants = [
+    `${raw}.png`,
+    `${raw.replace(/\//g, "_")}.png`,
+    `${raw.replace(/\s+/g, "_").replace(/\//g, "_")}.png`,
+    `${raw.replace(/[^A-Za-z0-9]/g, "")}.png`,
+    `${raw.replace(/\s+/g, "_").replace(/\//g, "_")}_icon.png`,
+    `${raw.replace(/[^A-Za-z0-9]/g, "")}_icon.png`
+  ];
+  const unique = [...new Set(variants)];
+  const folders = ["Abilities", "Ability Icons", "Utility"];
+  return folders.flatMap(folder => unique.map(file => `${folder}/${encodeURIComponent(file)}`));
+}
+
+function setUtilityImageFallback(img, candidates, index = 0){
+  if(index >= candidates.length){
+    img.style.display = "none";
+    return;
+  }
+  img.dataset.fallbackIndex = String(index);
+  img.src = candidates[index];
+}
+
+function utilityImageError(img){
+  const candidates = JSON.parse(img.dataset.candidates || "[]");
+  const next = Number(img.dataset.fallbackIndex || 0) + 1;
+  setUtilityImageFallback(img, candidates, next);
+}
+
+function renderCard(item, type, extraClass=""){
+  const detail = item.type ? `<div class="item-detail">TYPE / ${item.type}</div>` : "";
+  const bind = item.bind ? `<div class="item-bind">BIND / ${item.bind}</div>` : "";
+  let image = "";
+
+  if(item.name !== "Nothing"){
+    if(type === "weapon"){
+      image = `<img src="${weaponImage(item.name)}" alt="${item.name}" class="item-image weapon-image" onerror="this.remove()" />`;
+    }else if(type === "shield"){
+      image = `<img src="${shieldImage(item.name)}" alt="${item.name}" class="item-image shield-image" onerror="this.remove()" />`;
+    }else if(type === "utility"){
+    image = `<img src="${item.icon}" alt="${item.name}" class="item-image utility-image" onerror="this.remove()" />`;
+  }
+  }
+
+  const meta = item.name === "Nothing" ? "DEFAULT" : `COST / ${creditHtml(item.price)}`;
+
+  return `<div class="reel-card ${extraClass}">
+    <div class="item-copy">
+      ${image}
+      <div class="item-name">${item.name}</div>
+      <div class="item-meta">${meta}</div>
+      ${detail}${bind}
+    </div>
+  </div>`;
+}
+
+function renderFinal(el, item, type){
+  el.innerHTML = `<div class="reel">${renderCard(item,type,"current")}</div>`;
+}
+
+function renderStaticReel(el, pool, type){
+  const reel = document.createElement("div");
+  reel.className = "reel";
+
+  const startInfo = currentStartCard(type, pool);
+  const beforeCount = 6;
+  const afterCount = 8;
+  const cards = [];
+
+  // Always keep real cards above the visible starting card.
+  for(let i = 0; i < beforeCount; i++){
+    cards.push(random(pool));
+  }
+
+  const currentIndex = cards.length;
+  cards.push(startInfo.item);
+
+  for(let i = 0; i < afterCount; i++){
+    cards.push(random(pool));
+  }
+
+  reel.innerHTML = cards.map(item => renderCard(item, type)).join("");
+  el.innerHTML = "";
+  el.appendChild(reel);
+
+  const firstCard = reel.querySelector(".reel-card");
+  if(firstCard){
+    const cardH = firstCard.clientHeight;
+    const gap = parseFloat(getComputedStyle(reel).gap) || 0;
+    const centerOffset = (el.clientHeight - cardH) / 2;
+    const startY = -(currentIndex * (cardH + gap) - centerOffset);
+    reel.style.transform = `translate3d(0, ${startY}px, 0)`;
+  }
+}
+
+function currentStartCard(type, pool){
+  const current = currentVisible[type];
+  const item = current && pool.find(x => x.name === current.name);
+
+  return {
+    item: item || pool[0] || {name:"Nothing",price:0,icon:"◌"}
+  };
+}
+function renderAllWindows(){
+  renderStaticReel(els.weapon, weapons, "weapon");
+  renderStaticReel(els.utility, getUtilityPool(getPreviewAgent()), "utility");
+  renderStaticReel(els.shield, shields, "shield");
+}
+
+function shuffle(arr){
+  const copy = [...arr];
+  for(let i = copy.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
+
+function chooseResult(budget, agentName){
+  const result = {w:null,u:null,s:null,total:0};
+  let remaining = budget;
+  const order = shuffle(["weapon","utility","shield"]);
+  const utilPool = getUtilityPool(agentName);
+
+  order.forEach(category => {
+    if(category === "weapon"){
+      const pool = affordablePool(weapons, remaining);
+      result.w = weightedRandom(pool);
+      remaining -= result.w.price;
+    } else if(category === "utility"){
+      const pool = affordablePool(utilPool, remaining);
+      result.u = weightedRandom(pool);
+      remaining -= result.u.price;
+    } else {
+      const pool = affordablePool(shields, remaining);
+      result.s = weightedRandom(pool);
+      remaining -= result.s.price;
+    }
+  });
+
+  result.total = result.w.price + result.u.price + result.s.price;
+  return result;
+}
+
+function buildReel(el, pool, final, type){
+  const reel = document.createElement("div");
+  reel.className = "reel";
+
+  const startInfo = currentStartCard(type, pool);
+  const beforeCount = 7;
+  const travelCount = 18;
+  const afterCount = 10;
+  const cards = [];
+
+  for(let i = 0; i < beforeCount; i++) cards.push(random(pool));
+
+  const startIndex = cards.length;
+  cards.push(startInfo.item);
+
+  for(let i = 0; i < travelCount; i++) cards.push(random(pool));
+
+  const finalIndex = cards.length;
+  cards.push(final);
+
+  for(let i = 0; i < afterCount; i++) cards.push(random(pool));
+
+  reel.innerHTML = cards.map(item => renderCard(item, type)).join("");
+  el.innerHTML = "";
+  el.appendChild(reel);
+
+  const firstCard = reel.querySelector(".reel-card");
+  let startY = 0;
+  let targetY = 0;
+
+  if(firstCard){
+    const cardH = firstCard.getBoundingClientRect().height;
+    const gap = parseFloat(getComputedStyle(reel).gap) || 0;
+    const step = cardH + gap;
+    const centerOffset = (el.clientHeight - cardH) / 2;
+    startY = -(startIndex * step - centerOffset);
+    targetY = -(finalIndex * step - centerOffset);
+    reel.style.transform = `translate3d(0, ${startY}px, 0)`;
+  }
+
+  return { reel, finalIndex, startIndex, startY, targetY, startItem:startInfo.item };
+}
+function random(arr){
+  if(!arr || !arr.length) return {name:"Nothing", price:0, icon:"◌"};
+  return arr[Math.floor(Math.random()*arr.length)];
+}
+
+function weightedRandom(arr){
+  if(!arr || !arr.length) return {name:"Nothing", price:0, icon:"◌"};
+  const weights = arr.map(item => Math.pow(item.price + 50, 0.75));
+  const total = weights.reduce((sum, w) => sum + w, 0);
+  let r = Math.random() * total;
+  for(let i = 0; i < arr.length; i++){
+    r -= weights[i];
+    if(r < 0) return arr[i];
+  }
+  return arr[arr.length - 1];
+}
+
+function affordablePool(pool, budget){
+  return pool.filter(x=>x.price<=budget);
+}
+
+function updateStart(){
+  const c=Math.max(0,Number(creditsInput.value)||0);
+  els.sumStart.innerHTML=creditHtml(c);
+}
+
+creditsInput.addEventListener("input", updateStart);
+updateStart();
+renderAllWindows();
+
+function delay(ms){return new Promise(r=>setTimeout(r,ms));}
+
+function randomDelay(min, max){
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function animateReel(obj, duration, delayMs = 0){
+  return new Promise(resolve => {
+    const start = () => {
+      const startY = obj.startY;
+      const targetY = obj.targetY;
+      const startTime = performance.now();
+
+      obj.reel.style.transition = "none";
+      obj.reel.style.transform = `translate3d(0, ${startY}px, 0)`;
+
+      // Smoothly accelerate into the spin, then slow down naturally.
+      // The old easing only travelled 8% of the reel during the first 12%
+      // of the animation, which made the wheel appear to do a tiny spin
+      // before suddenly taking off.
+      function ease(t){
+        // Ease-out cubic: starts moving immediately and continuously,
+        // then gradually slows as it approaches the winning card.
+        return 1 - Math.pow(1 - t, 3);
+      }
+
+      function frame(now){
+        const t = Math.min(1, (now - startTime) / duration);
+        const y = startY + (targetY - startY) * ease(t);
+        obj.reel.style.transform = `translate3d(0, ${y}px, 0)`;
+        if(t < 1){
+          requestAnimationFrame(frame);
+        }else{
+          obj.reel.style.transform = `translate3d(0, ${targetY}px, 0)`;
+          resolve();
+        }
+      }
+      requestAnimationFrame(frame);
+    };
+    delayMs > 0 ? setTimeout(start, delayMs) : start();
+  });
+}
+
+async function spin(){
+  const startCredits=Math.max(0,Number(creditsInput.value)||0);
+
+  spinBtn.disabled=true;
+  agentSearch.disabled=true;
+  creditsInput.disabled=true;
+  message.textContent="ROLLING...";
+
+  // Play the spin audio from the same folder as the HTML file.
+  if(spinAudio){
+    spinAudio.currentTime = 0;
+    spinAudio.volume = 1.0;
+    spinAudio.loop = true;
+    spinAudio.play().catch(() => {});
+  }
+
+  const spinAgent = agentSelect.value;
+
+  const final=chooseResult(startCredits, spinAgent);
+  const utils=agents[spinAgent];
+
+  const wp=affordablePool(weapons,startCredits);
+  const up=affordablePool(utils,startCredits);
+  const sp=affordablePool(shields,startCredits);
+
+  // Build a real stack of cards for each wheel. The winning item is placed
+  // deep inside the stack so the wheel has plenty of visible movement.
+  const wr=buildReel(els.weapon,wp,final.w,"weapon");
+  const ur=buildReel(els.utility,up,final.u,"utility");
+  const sr=buildReel(els.shield,sp,final.s,"shield");
+
+  // Start each wheel from the current visible position and spin together.
+  [wr,ur,sr].forEach(obj=>{
+    obj.reel.style.transition="none";
+  });
+
+  const weaponDuration = 5800 + randomDelay(0, 250);
+  const utilityDuration = 5800 + randomDelay(100, 350);
+  const shieldDuration = 5800 + randomDelay(200, 450);
+
+  await Promise.all([
+    animateReel(wr, weaponDuration, 0),
+    animateReel(ur, utilityDuration, 0),
+    animateReel(sr, shieldDuration, 0)
+  ]);
+
+  // Let spin-music.mp3 continue playing naturally instead of cutting it off
+  // the instant the wheels finish. Starting a new spin resets it at the top.
+  if(spinAudio){
+    spinAudio.loop = false;
+  }
+
+  await delay(360);
+
+  // Highlight the winning cards.
+  [wr,ur,sr].forEach(obj=>{
+    const cards=obj.reel.querySelectorAll(".reel-card");
+    cards.forEach(c=>{ c.classList.remove("current"); c.classList.remove("pop"); c.classList.remove("win-glow"); });
+    if(cards[obj.finalIndex]){
+      const card = cards[obj.finalIndex];
+      card.classList.add("current");
+      card.classList.add("pop");
+      card.classList.add("win-glow");
+    }
+  });
+
+  await delay(120);
+
+  els.sumWeapon.textContent=final.w.name;
+  els.sumUtility.textContent=final.u.name;
+  els.sumShield.innerHTML = final.s.name === "Nothing"
+    ? final.s.name
+    : `<span class="agent-summary"><img src="${shieldImage(final.s.name)}" alt="${final.s.name}" class="item-image shield-image summary-item-icon" onerror="this.style.display='none'" /><span>${final.s.name}</span></span>`;
+  els.sumSpent.innerHTML=creditHtml(final.total);
+  els.sumLeft.innerHTML=creditHtml(startCredits-final.total);
+
+  els.sumLeft.className = startCredits-final.total>=0 ? "good" : "bad";
+  currentVisible = {
+    weapon: final.w,
+    utility: final.u,
+    shield: final.s
+  };
+  const chosenAgentIcon = `<img src="${agentIcon(spinAgent)}" alt="${spinAgent}" class="agent-icon" onerror="this.style.display='none'" />`;
+  els.sumAgent.innerHTML = `<span class="agent-summary">${chosenAgentIcon}<span>${spinAgent}</span></span>`;
+  message.innerHTML = `<span class="good">BUY LOCKED</span> <span>•</span> <span class="agent-summary">${chosenAgentIcon}<strong>${spinAgent}</strong></span> <span>•</span> <strong>${money(final.total)} spent</strong>`;
+
+  document.querySelectorAll(".window").forEach(x=>x.classList.add("shake"));
+  setTimeout(()=>document.querySelectorAll(".window").forEach(x=>x.classList.remove("shake")),400);
+
+  spinBtn.disabled=false;
+  agentSearch.disabled=false;
+  creditsInput.disabled=false;
+}
+
+spinBtn.addEventListener("click",spin);
+</script>
+</body>
+</html>
