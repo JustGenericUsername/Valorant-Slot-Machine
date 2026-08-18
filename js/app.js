@@ -103,6 +103,7 @@ function buildAgentRandomizer(){
       "Brimstone",
       "Clove",
       "Harbor",
+      "Miks",
       "Omen",
       "Viper"
     ],
@@ -123,7 +124,9 @@ function buildAgentRandomizer(){
       "Cypher",
       "Deadlock",
       "Killjoy",
-      "Sage"
+      "Sage",
+      "Veto",
+      "Vyse"
     ],
 
     Initiator: [
@@ -132,7 +135,8 @@ function buildAgentRandomizer(){
       "Gekko",
       "KAY/O",
       "Skye",
-      "Sova"
+      "Sova",
+      "Tejo"
     ]
 
   };
