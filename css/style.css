@@ -370,3 +370,58 @@
   transform:scale(1.05);
 }
 .change-background-btn:active{transform:scale(.95);}
+
+/* Agent Randomizer */
+
+.agent-role-row {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 20px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.agent-role-title {
+  flex: 0 0 120px;
+  width: 120px;
+
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 1px;
+  color: #ffffff;
+}
+
+.agent-role-agents {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  flex: 1;
+}
+
+.agent-check {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  cursor: pointer;
+  user-select: none;
+}
+
+.agent-check img {
+  width: 32px;
+  height: 32px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.agent-check span {
+  font-size: 13px;
+  color: #ddd;
+}
+
+.agent-check input {
+  margin: 0;
+}
+

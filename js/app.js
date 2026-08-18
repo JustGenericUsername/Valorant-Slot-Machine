@@ -51,7 +51,7 @@ function agentIcon(name){
 }
 
 function getUtilityPool(agentName){
-  return (agents[agentName] || agents[Object.keys(agents)[0]]).filter(item => item.bind !== "X");
+  return (agents[agentName] || agents[Object.keys(agents)[0]]).filter(item => item.bind !== "0");
 }
 
 function updateDropdownButton(name){
@@ -86,17 +86,109 @@ buildAgentOptions();
 buildAgentRandomizer();
 
 function buildAgentRandomizer(){
+
   agentRandomizerList.innerHTML = "";
 
-  Object.keys(agents).forEach(name => {
-    const label = document.createElement("label");
-    label.className = "agent-check";
-    label.innerHTML = `
-      <input type="checkbox" value="${name}" checked />
-      <img src="${agentIcon(name)}" alt="${name}" onerror="this.style.display='none'" />
-      <span>${name}</span>
-    `;
-    agentRandomizerList.appendChild(label);
+  const roleOrder = [
+    "Controller",
+    "Duelist",
+    "Sentinel",
+    "Initiator"
+  ];
+
+  const agentRoles = {
+
+    Controller: [
+      "Astra",
+      "Brimstone",
+      "Clove",
+      "Harbor",
+      "Omen",
+      "Viper"
+    ],
+
+    Duelist: [
+      "Iso",
+      "Jett",
+      "Neon",
+      "Phoenix",
+      "Raze",
+      "Reyna",
+      "Waylay",
+      "Yoru"
+    ],
+
+    Sentinel: [
+      "Chamber",
+      "Cypher",
+      "Deadlock",
+      "Killjoy",
+      "Sage"
+    ],
+
+    Initiator: [
+      "Breach",
+      "Fade",
+      "Gekko",
+      "KAY/O",
+      "Skye",
+      "Sova"
+    ]
+
+  };
+
+  roleOrder.forEach(role => {
+
+    const roleAgents = agentRoles[role]
+      .filter(name =>
+        Object.prototype.hasOwnProperty.call(agents, name)
+      );
+
+    if(!roleAgents.length) return;
+
+    // One row per role
+    const roleRow = document.createElement("div");
+    roleRow.className = "agent-role-row";
+
+    // Role name on the left
+    const roleTitle = document.createElement("div");
+    roleTitle.className = "agent-role-title";
+    roleTitle.textContent = role.toUpperCase();
+
+    roleRow.appendChild(roleTitle);
+
+    // Agents to the right
+    const agentsContainer = document.createElement("div");
+    agentsContainer.className = "agent-role-agents";
+
+    roleAgents.forEach(name => {
+
+      const label = document.createElement("label");
+      label.className = "agent-check";
+
+      label.innerHTML = `
+        <input
+          type="checkbox"
+          value="${name}"
+          checked
+        />
+
+        <img
+          src="${agentIcon(name)}"
+          alt="${name}"
+          onerror="this.style.display='none'"
+        />
+
+        <span>${name}</span>
+      `;
+
+      agentsContainer.appendChild(label);
+
+    });
+
+    roleRow.appendChild(agentsContainer);
+    agentRandomizerList.appendChild(roleRow);
+
   });
 }
 
@@ -585,9 +677,9 @@ function chooseResult(budget, agentName){
   // Generate many possible valid combinations
   for(let i = 0; i < 300; i++){
 
-    const weapon = weightedRandom(weaponPool);
-    const utility = weightedRandom(utilityPool);
-    const shield = weightedRandom(shieldPool);
+    const weapon = weightedRandom(weaponPool, "weapon", budget);
+    const utility = weightedRandom(utilityPool, "utility", budget);
+    const shield = weightedRandom(shieldPool, "shield", budget);
 
     const total =
       weapon.price +
@@ -607,9 +699,9 @@ function chooseResult(budget, agentName){
 
   // Fallback if no valid combination was generated
   if(!candidates.length){
-    const weapon = weightedRandom(weaponPool);
-    const utility = weightedRandom(utilityPool);
-    const shield = weightedRandom(shieldPool);
+    const weapon = weightedRandom(weaponPool, "weapon", budget);
+    const utility = weightedRandom(utilityPool, "utility", budget);
+    const shield = weightedRandom(shieldPool, "shield", budget);
 
     return {
       w: weapon,
@@ -632,6 +724,7 @@ function chooseResult(budget, agentName){
     1.00 = strongly favors maxing credits
   */
   const POWER = 0.5;
+  
 
   const weightedCandidates = candidates.map(result => {
 
@@ -718,38 +811,228 @@ function random(arr){
   return arr[Math.floor(Math.random()*arr.length)];
 }
 
-function weightedRandom(arr){
+function isFullUtil(item){
+  return String(item?.name || "")
+    .replace(/[^a-z]/gi, "")
+    .toLowerCase() === "fullutil";
+}
+
+// ============================================================
+// FULL UTILITY WEIGHT SETTINGS
+// ============================================================
+//
+// These numbers control how much MORE likely "Full Util" is
+// compared to its normal weighting.
+//
+// Bigger number = Full Util appears MORE often
+// Smaller number = Full Util appears LESS often
+//
+// IMPORTANT:
+// These are WEIGHTS, not exact percentages.
+//
+// Example:
+// 2 = roughly twice the weighting
+// 4 = roughly four times the weighting
+// 6 = roughly six times the weighting
+//
+// ============================================================
+
+
+// 🔧 CHANGE THESE NUMBERS TO TUNE FULL UTIL
+// ------------------------------------------------------------
+
+// LOW CREDITS
+// Used when the player has LESS than 2,500 credits.
+const FULL_UTIL_LOW = 2;
+
+
+// MEDIUM CREDITS
+// Used when the player has 2,500 - 3,499 credits.
+const FULL_UTIL_MEDIUM = 3;
+
+
+// GOOD BUY
+// Used when the player has 3,500 - 4,499 credits.
+const FULL_UTIL_GOOD = 4;
+
+
+// HIGH BUY
+// Used when the player has 4,500 - 4,999 credits.
+const FULL_UTIL_HIGH = 5;
+
+
+// FULL BUY
+// Used when the player has 5,000+ credits.
+//
+// ⭐ THIS IS THE MAIN ONE TO CHANGE
+// if you want Full Util to be much more common on
+// very high-credit buys.
+const FULL_UTIL_MAX = 8;
+
+
+// ============================================================
+// CREDIT THRESHOLDS
+// ============================================================
+//
+// You can also change WHEN each weighting kicks in.
+//
+// Example:
+//
+// 2500 = low → medium
+// 3500 = medium → good
+// 4500 = good → high
+// 5000 = high → max
+//
+// ============================================================
+
+const FULL_UTIL_THRESHOLD_1 = 2500;
+const FULL_UTIL_THRESHOLD_2 = 3500;
+const FULL_UTIL_THRESHOLD_3 = 4500;
+const FULL_UTIL_THRESHOLD_4 = 5000;
+
+
+// ============================================================
+// WEIGHTED RANDOM FUNCTION
+// ============================================================
+
+function weightedRandom(arr, type = "", budget = 0){
+
+  // If there are no items available,
+  // return an empty item.
   if(!arr || !arr.length){
+
     return {
-      name:"Nothing",
-      price:0,
-      icon:"◌"
+      name: "Nothing",
+      price: 0,
+      icon: "◌"
     };
+
   }
 
-  const weights = arr.map(item =>
-    Math.pow(item.price + 100, 0.20)
-  );
 
-  const total =
-    weights.reduce(
-      (sum, w) => sum + w,
-      0
+  // ==========================================================
+  // CREATE WEIGHTS FOR EVERY ITEM
+  // ==========================================================
+
+  const weights = arr.map(item => {
+
+    // --------------------------------------------------------
+    // NORMAL ITEM WEIGHT
+    // --------------------------------------------------------
+    //
+    // Expensive items naturally get a higher weighting.
+    //
+    // You DON'T normally need to change this.
+    //
+    let weight = Math.pow(
+      item.price + 50,
+      0.75
     );
 
-  let r =
-    Math.random() * total;
+
+    // ========================================================
+    // FULL UTIL SPECIAL WEIGHTING
+    // ========================================================
+
+    if(type === "utility" && isFullUtil(item)){
+
+      let fullUtilityWeight;
+
+
+      // ------------------------------------------------------
+      // LOW CREDIT BUY
+      // ------------------------------------------------------
+
+      if(budget < FULL_UTIL_THRESHOLD_1){
+
+        fullUtilityWeight = FULL_UTIL_LOW;
+
+      }
+
+
+      // ------------------------------------------------------
+      // MEDIUM CREDIT BUY
+      // ------------------------------------------------------
+
+      else if(budget < FULL_UTIL_THRESHOLD_2){
+
+        fullUtilityWeight = FULL_UTIL_MEDIUM;
+
+      }
+
+
+      // ------------------------------------------------------
+      // GOOD CREDIT BUY
+      // ------------------------------------------------------
+
+      else if(budget < FULL_UTIL_THRESHOLD_3){
+
+        fullUtilityWeight = FULL_UTIL_GOOD;
+
+      }
+
+
+      // ------------------------------------------------------
+      // HIGH CREDIT BUY
+      // ------------------------------------------------------
+
+      else if(budget < FULL_UTIL_THRESHOLD_4){
+
+        fullUtilityWeight = FULL_UTIL_HIGH;
+
+      }
+
+
+      // ------------------------------------------------------
+      // 5,000+ CREDIT BUY
+      // ------------------------------------------------------
+
+      else{
+
+        fullUtilityWeight = FULL_UTIL_MAX;
+
+      }
+
+
+      // Apply the Full Util bonus.
+      weight *= fullUtilityWeight;
+
+    }
+
+
+    return weight;
+
+  });
+
+
+  // ==========================================================
+  // PICK RANDOM ITEM USING THE WEIGHTS
+  // ==========================================================
+
+  const total = weights.reduce(
+    (sum, weight) => sum + weight,
+    0
+  );
+
+  let r = Math.random() * total;
+
 
   for(let i = 0; i < arr.length; i++){
 
     r -= weights[i];
 
     if(r < 0){
+
       return arr[i];
+
     }
+
   }
 
+
+  // Fallback
   return arr[arr.length - 1];
+
 }
 
 function affordablePool(pool, budget){

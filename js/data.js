@@ -36,7 +36,7 @@ const agents = {
     {name:"Stars (x2)", price:150,bind:"X", icon:"Abilities/Stars.png"},
     {name:"Stars (x3)", price:300,bind:"X", icon:"Abilities/Stars.png"},
     {name:"Stars (x4)", price:450,bind:"X", icon:"Abilities/Stars.png"},
-    {name:"Stars (x5)", price:600,bind:"X", icon:"Abilities/Stars.png"}
+    {name:"Full Util", price:600,bind:"X", icon:"Abilities/Stars.png"}
   ],
   Breach: [
     {name:"Aftershock", price:200, bind:"C", icon:"Abilities/Aftershock.png"},
@@ -46,9 +46,8 @@ const agents = {
   ],
   Brimstone: [
     {name:"Incendiary", price:250, bind:"Q", icon:"Abilities/Incendiary.png"},
-    {name:"Sky Smoke", price:0, bind:"E", icon:"Abilities/Sky_Smoke.png"},
-    {name:"Sky Smoke (x2)", price:100, bind:"E", icon:"Abilities/Sky_Smoke.png"},
-    {name:"Sky Smoke (x3)", price:200, bind:"E", icon:"Abilities/Sky_Smoke.png"},
+    {name:"Sky Smoke", price:100, bind:"E", icon:"Abilities/Sky_Smoke.png"},
+    {name:"Sky Smoke (x2)", price:200, bind:"E", icon:"Abilities/Sky_Smoke.png"},
     {name:"Stim Beacon", price:200, bind:"C", icon:"Abilities/Stim_Beacon.png"},
     {name:"Full Util", price:650, bind:"X", icon:"Abilities/BrimstoneUlt.png"}
   ],
