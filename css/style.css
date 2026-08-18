@@ -371,60 +371,504 @@
 }
 .change-background-btn:active{transform:scale(.95);}
 
-/* Agent Randomizer */
+/* ============================================================
+   AGENT RANDOMIZER
+   ============================================================ */
+
+.agent-randomizer-standalone {
+    width: 100%;
+    margin: 0 0 14px;
+
+    border: 1px solid var(--line);
+    background: rgba(9, 14, 20, .94);
+
+    box-shadow: 0 18px 45px #0008;
+
+    padding: 14px;
+}
+
+
+/* ------------------------------------------------------------
+   TITLE
+   ------------------------------------------------------------ */
+
+.agent-randomizer-standalone .agent-randomizer-title {
+    color: #84909e;
+    font-size: 10px;
+    letter-spacing: .18em;
+    font-weight: 900;
+
+    margin-bottom: 10px;
+}
+
+.agent-randomizer {
+    margin: 0;
+    border: 0;
+    background: transparent;
+    padding: 0;
+    max-width: none;
+}
+
+.agent-randomizer-title {
+    color: #84909e;
+    font-size: 9px;
+    letter-spacing: .15em;
+    font-weight: 900;
+
+    margin-bottom: 8px;
+}
+
+
+/* ============================================================
+   ROLE ROW
+   ============================================================ */
 
 .agent-role-row {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  gap: 20px;
-  padding: 12px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    display: grid;
+
+    /*
+     * Fixed column for the role name,
+     * remaining space goes to the agents.
+     */
+    grid-template-columns: 120px minmax(0, 1fr);
+
+    align-items: center;
+
+    width: 100%;
+
+    min-height: 58px;
+
+    gap: 12px;
+
+    padding: 10px 0;
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
+
+
+/* ------------------------------------------------------------
+   ROLE NAME
+   ------------------------------------------------------------ */
 
 .agent-role-title {
-  flex: 0 0 120px;
-  width: 120px;
+    width: 120px;
 
-  font-weight: 700;
-  font-size: 13px;
-  letter-spacing: 1px;
-  color: #ffffff;
+    font-weight: 900;
+    font-size: 12px;
+
+    letter-spacing: 1px;
+
+    color: #ffffff;
+
+    white-space: nowrap;
 }
+
+
+/* ============================================================
+   AGENT GRID
+   ============================================================ */
 
 .agent-role-agents {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
-  flex: 1;
+
+    /*
+     * Seven clean columns on desktop.
+     *
+     * This is the main change that makes everything
+     * line up instead of packing randomly.
+     */
+    display: grid;
+
+    grid-template-columns:
+        repeat(7, minmax(0, 1fr));
+
+    column-gap: 12px;
+    row-gap: 10px;
+
+    width: 100%;
+    min-width: 0;
+
+    align-items: center;
 }
+
+
+/* ============================================================
+   INDIVIDUAL AGENT
+   ============================================================ */
 
 .agent-check {
-  display: flex;
-  align-items: center;
-  gap: 7px;
+    display: flex;
 
-  cursor: pointer;
-  user-select: none;
+    align-items: center;
+
+    /*
+     * Consistent spacing inside every agent cell.
+     */
+    gap: 6px;
+
+    width: 100%;
+    min-width: 0;
+
+    height: 32px;
+
+    color: #dce6eb;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    letter-spacing: .04em;
+
+    cursor: pointer;
+    user-select: none;
+
+    white-space: nowrap;
 }
 
-.agent-check img {
-  width: 32px;
-  height: 32px;
-  object-fit: cover;
-  border-radius: 4px;
-}
 
-.agent-check span {
-  font-size: 13px;
-  color: #ddd;
-}
+/* ------------------------------------------------------------
+   CHECKBOX
+   ------------------------------------------------------------ */
 
 .agent-check input {
-  margin: 0;
+    width: 14px;
+    height: 14px;
+
+    margin: 0;
+
+    flex: 0 0 14px;
+
+    accent-color: var(--accent);
+
+    cursor: pointer;
 }
 
+
+/* ------------------------------------------------------------
+   AGENT ICON
+   ------------------------------------------------------------ */
+
+.agent-check img {
+    width: 30px;
+    height: 30px;
+
+    object-fit: contain;
+
+    display: block;
+
+    flex: 0 0 30px;
+}
+
+
+/* ------------------------------------------------------------
+   AGENT NAME
+   ------------------------------------------------------------ */
+
+.agent-check span {
+    min-width: 0;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+
+    line-height: 30px;
+}
+
+
+/* ============================================================
+   RANDOMIZER BUTTONS
+   ============================================================ */
+
+.agent-randomizer-actions {
+    display: flex;
+
+    gap: 7px;
+
+    margin-top: 10px;
+}
+
+.agent-randomizer-actions button {
+    height: 28px;
+
+    padding: 0 10px;
+
+    font-size: 8px;
+
+    letter-spacing: .08em;
+
+    background: #101821;
+
+    color: #dce6eb;
+
+    border: 1px solid #34414e;
+
+    box-shadow: none;
+}
+
+.agent-randomizer-actions button:hover {
+    border-color: var(--accent);
+    filter: none;
+}
+
+
+/* ============================================================
+   RANDOM AGENT RESULT
+   ============================================================ */
+
+.agent-roll {
+    margin-top: 10px;
+
+    padding-top: 10px;
+
+    border-top: 1px solid #26313d;
+
+    display: grid;
+
+    grid-template-columns: 1fr auto;
+
+    gap: 10px;
+
+    align-items: center;
+}
+
+.agent-roll-display {
+    height: 62px;
+
+    border: 1px solid #34414e;
+
+    background: #101821;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 10px;
+
+    overflow: hidden;
+}
+
+.agent-roll-display img {
+    width: 34px;
+    height: 34px;
+
+    object-fit: contain;
+
+    flex: 0 0 34px;
+}
+
+.agent-roll-name {
+    font-size: 12px;
+
+    font-weight: 1000;
+
+    letter-spacing: .08em;
+
+    text-transform: uppercase;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+.agent-roll-status {
+    display: block;
+
+    color: #788493;
+
+    font-size: 8px;
+
+    letter-spacing: .12em;
+
+    margin-top: 3px;
+}
+
+#randomizeAgent {
+    height: 62px;
+
+    padding: 0 16px;
+
+    font-size: 9px;
+
+    min-width: 132px;
+}
+
+
+/* ============================================================
+   DISABLED STATE
+   ============================================================ */
+
+.agent-randomizer.disabled {
+    opacity: .55;
+}
+
+.agent-randomizer.disabled .agent-check {
+    cursor: not-allowed;
+}
+
+
+/* ============================================================
+   SELECTED AGENT SUMMARY
+   ============================================================ */
+
+.agent-summary {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+}
+
+.agent-summary .agent-icon {
+    width: 22px;
+    height: 22px;
+
+    object-fit: contain;
+
+    flex: 0 0 22px;
+}
+
+
+
+/* ============================================================
+   AGENT RANDOMIZER RESPONSIVE LAYOUT
+   ============================================================ */
+
+@media (max-width: 900px) {
+
+    .agent-role-agents {
+        grid-template-columns:
+            repeat(5, minmax(0, 1fr));
+
+        column-gap: 8px;
+        row-gap: 8px;
+    }
+
+    .agent-role-row {
+        grid-template-columns: 100px minmax(0, 1fr);
+        gap: 10px;
+    }
+
+    .agent-role-title {
+        width: 100px;
+        font-size: 11px;
+    }
+
+    .agent-check {
+        font-size: 9px;
+    }
+
+    .agent-check img {
+        width: 28px;
+        height: 28px;
+        flex-basis: 28px;
+    }
+}
+
+
+@media (max-width: 700px) {
+
+    .agent-randomizer-standalone {
+        padding: 10px;
+    }
+
+    /*
+     * Put the role name above its agents on phones.
+     * This gives the agent list much more usable width.
+     */
+    .agent-role-row {
+        display: block;
+
+        padding: 12px 0;
+    }
+
+    .agent-role-title {
+        width: 100%;
+
+        margin-bottom: 8px;
+
+        font-size: 11px;
+    }
+
+    .agent-role-agents {
+        display: grid;
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        column-gap: 12px;
+        row-gap: 8px;
+
+        width: 100%;
+    }
+
+/*
+  Change the Values Here for Agent Text Size 
+
+  Default Values:
+
+  height: 34px
+  gap: 6px
+  font-size: 10px
+*/
+    .agent-check {
+        height: 34px;
+
+        gap: 6px;
+
+        font-size: 12px;
+    }
+/*
+  Change the Values Here for Agent Image Size
+
+  Default Values:
+
+  width: 30px
+  height: 30px
+  flex-basis: 30px
+*/
+    .agent-check img {
+        width: 32px;
+        height: 32px;
+
+        flex-basis: 30px;
+    }
+
+    .agent-check input {
+        width: 14px;
+        height: 14px;
+
+        flex-basis: 14px;
+    }
+
+    .agent-randomizer-actions {
+        display: grid;
+
+        grid-template-columns: 1fr 1fr;
+
+        gap: 6px;
+    }
+
+    .agent-randomizer-actions button {
+        width: 100%;
+    }
+
+    .agent-roll {
+        grid-template-columns: 1fr;
+    }
+
+    .agent-roll-display {
+        width: 100%;
+    }
+
+    #randomizeAgent {
+        width: 100%;
+        min-width: 0;
+    }
+}
 
 /* ============================================================
    MOBILE UI
@@ -795,5 +1239,389 @@
 
         font-size: 14px;
         letter-spacing: 1.5px;
+    }
+}
+
+
+/* ============================================================
+   MOBILE AGENT SELECTOR MODAL
+   ============================================================ */
+
+/* Hidden on desktop */
+.mobile-agent-selector {
+    display: none;
+}
+
+.mobile-agent-modal {
+    display: none;
+}
+
+
+@media (max-width: 700px) {
+
+    /* ----------------------------------------------------------
+       MOBILE SELECT AGENTS BUTTON
+       ---------------------------------------------------------- */
+
+    .mobile-agent-selector {
+        display: block;
+
+        width: 100%;
+        margin: 8px 0 10px;
+    }
+
+    .mobile-agent-select-button {
+        width: 100%;
+
+        min-height: 52px;
+
+        padding: 10px 14px;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        background: #101821;
+        color: #f3f5f7;
+
+        border: 1px solid #34414e;
+
+        cursor: pointer;
+
+        font-size: 11px;
+        font-weight: 900;
+
+        letter-spacing: .12em;
+
+        text-align: left;
+    }
+
+    .mobile-agent-select-button:active {
+        transform: scale(.99);
+    }
+
+    .mobile-agent-select-button:hover {
+        border-color: rgba(117, 244, 209, .7);
+    }
+
+    .mobile-agent-select-left {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+
+        min-width: 0;
+    }
+
+    .mobile-agent-select-title {
+        color: #75f4d1;
+        font-size: 11px;
+        font-weight: 900;
+        letter-spacing: .12em;
+    }
+
+    .mobile-agent-select-count {
+        color: #84909e;
+        font-size: 9px;
+        letter-spacing: .08em;
+    }
+
+    .mobile-agent-select-arrow {
+        font-size: 18px;
+        color: #75f4d1;
+        flex: 0 0 auto;
+    }
+
+
+    /* ==========================================================
+       MODAL BACKDROP
+       ========================================================== */
+
+    .mobile-agent-modal {
+        position: fixed;
+
+        inset: 0;
+
+        z-index: 10000;
+
+        display: none;
+
+        padding: 12px;
+
+        background: rgba(0, 0, 0, .72);
+
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+    }
+
+    .mobile-agent-modal.open {
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+    }
+
+
+    /* ==========================================================
+       MODAL BOX
+       ========================================================== */
+
+    .mobile-agent-modal-box {
+        width: 100%;
+        max-width: 520px;
+
+        max-height: 92vh;
+
+        display: flex;
+        flex-direction: column;
+
+        background: #091018;
+
+        border: 1px solid #34414e;
+
+        box-shadow:
+            0 25px 70px rgba(0, 0, 0, .8);
+    }
+
+
+    /* ==========================================================
+       MODAL HEADER
+       ========================================================== */
+
+    .mobile-agent-modal-header {
+        flex: 0 0 auto;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        padding: 14px;
+
+        border-bottom: 1px solid #26313d;
+
+        background: #0d151e;
+    }
+
+    .mobile-agent-modal-title {
+        color: #f3f5f7;
+
+        font-size: 13px;
+        font-weight: 900;
+
+        letter-spacing: .14em;
+    }
+
+    .mobile-agent-modal-close {
+        width: 34px;
+        height: 34px;
+
+        min-height: 34px;
+
+        padding: 0;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background: #101821;
+
+        border: 1px solid #34414e;
+
+        color: #f3f5f7;
+
+        font-size: 20px;
+        line-height: 1;
+
+        cursor: pointer;
+    }
+
+
+    /* ==========================================================
+       MODAL CONTENT
+       ========================================================== */
+
+    .mobile-agent-modal-content {
+        flex: 1 1 auto;
+
+        min-height: 0;
+
+        overflow-y: auto;
+        overflow-x: hidden;
+
+        padding: 4px 12px 10px;
+
+        -webkit-overflow-scrolling: touch;
+    }
+
+
+    /* ----------------------------------------------------------
+       ROLE ROW
+       ---------------------------------------------------------- */
+
+    .mobile-agent-modal .agent-role-row {
+        display: block;
+
+        padding: 12px 0;
+
+        margin: 0;
+
+        border-bottom: 1px solid rgba(255, 255, 255, .08);
+    }
+
+    .mobile-agent-modal .agent-role-title {
+        width: 100%;
+
+        margin-bottom: 9px;
+
+        font-size: 11px;
+
+        font-weight: 900;
+
+        letter-spacing: .12em;
+
+        color: #84909e;
+    }
+
+
+    /* ==========================================================
+       AGENT TABLE / GRID
+       ========================================================== */
+
+    .mobile-agent-modal .agent-role-agents {
+        display: grid;
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap: 6px 10px;
+
+        width: 100%;
+    }
+
+
+    /* ----------------------------------------------------------
+       AGENT
+       ---------------------------------------------------------- */
+
+    .mobile-agent-modal .agent-check {
+        width: 100%;
+        min-width: 0;
+
+        height: 42px;
+
+        display: flex;
+        align-items: center;
+
+        gap: 6px;
+
+        padding: 4px 5px;
+
+        background: rgba(16, 24, 33, .7);
+
+        border: 1px solid rgba(52, 65, 78, .65);
+
+        font-size: 10px;
+
+        color: #dce6eb;
+
+        cursor: pointer;
+    }
+
+    .mobile-agent-modal .agent-check:has(input:checked) {
+        border-color: rgba(117, 244, 209, .5);
+
+        background: rgba(117, 244, 209, .07);
+    }
+
+    .mobile-agent-modal .agent-check img {
+        width: 30px;
+        height: 30px;
+
+        flex: 0 0 30px;
+
+        object-fit: contain;
+    }
+
+    .mobile-agent-modal .agent-check input {
+        width: 15px;
+        height: 15px;
+
+        margin: 0;
+
+        flex: 0 0 15px;
+
+        accent-color: #75f4d1;
+    }
+
+    .mobile-agent-modal .agent-check span {
+        min-width: 0;
+
+        overflow: hidden;
+
+        text-overflow: ellipsis;
+
+        white-space: nowrap;
+
+        font-size: 10px;
+    }
+
+
+    /* ==========================================================
+       MODAL ACTIONS
+       ========================================================== */
+
+    .mobile-agent-modal-actions {
+        flex: 0 0 auto;
+
+        display: grid;
+
+        grid-template-columns: 1fr 1fr;
+
+        gap: 7px;
+
+        padding: 10px 12px;
+
+        border-top: 1px solid #26313d;
+
+        background: #0d151e;
+    }
+
+    .mobile-agent-modal-actions button {
+        width: 100%;
+
+        min-height: 40px;
+
+        font-size: 9px;
+
+        letter-spacing: .08em;
+    }
+
+    .mobile-agent-modal-done {
+        grid-column: 1 / -1;
+
+        background: #75f4d1 !important;
+
+        color: #071018 !important;
+
+        border-color: #75f4d1 !important;
+
+        font-weight: 900;
+    }
+
+
+    /* ==========================================================
+       HIDE ORIGINAL LIST ON MOBILE
+       ========================================================== */
+
+    #agentRandomizerList {
+        display: none;
+    }
+
+    /*
+     * Keep the existing Select All / Clear All buttons hidden
+     * because the modal has its own versions.
+     */
+    #selectAllAgents,
+    #clearAllAgents {
+        display: none;
     }
 }

@@ -1166,6 +1166,448 @@ function animateReel(obj, duration, delayMs = 0){
   });
 }
 
+
+/* ============================================================
+   MOBILE AGENT SELECTOR
+   ============================================================ */
+
+function setupMobileAgentSelector(){
+
+    /*
+     * Don't create it twice.
+     */
+    if(document.getElementById("mobileAgentSelector")) return;
+
+    const originalList =
+        document.getElementById("agentRandomizerList");
+
+    if(!originalList) return;
+
+
+    /* ----------------------------------------------------------
+       CREATE OPEN BUTTON
+       ---------------------------------------------------------- */
+
+    const selector = document.createElement("div");
+
+    selector.id = "mobileAgentSelector";
+    selector.className = "mobile-agent-selector";
+
+    selector.innerHTML = `
+        <button
+            type="button"
+            class="mobile-agent-select-button"
+            id="mobileAgentSelectButton"
+        >
+            <span class="mobile-agent-select-left">
+                <span class="mobile-agent-select-title">
+                    SELECT AGENTS
+                </span>
+
+                <span
+                    class="mobile-agent-select-count"
+                    id="mobileAgentSelectCount"
+                >
+                    ALL AGENTS SELECTED
+                </span>
+            </span>
+
+            <span class="mobile-agent-select-arrow">
+                ›
+            </span>
+        </button>
+    `;
+
+
+    /*
+     * Put the button directly before the original list.
+     */
+    originalList.parentNode.insertBefore(
+        selector,
+        originalList
+    );
+
+
+    /* ----------------------------------------------------------
+       CREATE MODAL
+       ---------------------------------------------------------- */
+
+    const modal = document.createElement("div");
+
+    modal.id = "mobileAgentModal";
+    modal.className = "mobile-agent-modal";
+
+    modal.innerHTML = `
+        <div
+            class="mobile-agent-modal-box"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="mobileAgentModalTitle"
+        >
+
+            <div class="mobile-agent-modal-header">
+
+                <div
+                    class="mobile-agent-modal-title"
+                    id="mobileAgentModalTitle"
+                >
+                    SELECT AGENTS
+                </div>
+
+                <button
+                    type="button"
+                    class="mobile-agent-modal-close"
+                    id="mobileAgentModalClose"
+                    aria-label="Close agent selector"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <div
+                class="mobile-agent-modal-content"
+                id="mobileAgentModalContent"
+            ></div>
+
+
+            <div class="mobile-agent-modal-actions">
+
+                <button
+                    type="button"
+                    id="mobileSelectAllAgents"
+                >
+                    SELECT ALL
+                </button>
+
+                <button
+                    type="button"
+                    id="mobileClearAllAgents"
+                >
+                    CLEAR ALL
+                </button>
+
+                <button
+                    type="button"
+                    class="mobile-agent-modal-done"
+                    id="mobileAgentModalDone"
+                >
+                    DONE
+                </button>
+
+            </div>
+
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+
+
+    /* ----------------------------------------------------------
+       COPY THE CURRENT AGENT TABLE
+       ---------------------------------------------------------- */
+
+    const modalContent =
+        document.getElementById("mobileAgentModalContent");
+
+    const listCopy = originalList.cloneNode(true);
+
+    listCopy.removeAttribute("id");
+
+    modalContent.appendChild(listCopy);
+
+
+    /* ----------------------------------------------------------
+       ELEMENTS
+       ---------------------------------------------------------- */
+
+    const openButton =
+        document.getElementById("mobileAgentSelectButton");
+
+    const closeButton =
+        document.getElementById("mobileAgentModalClose");
+
+    const doneButton =
+        document.getElementById("mobileAgentModalDone");
+
+    const selectAllButton =
+        document.getElementById("mobileSelectAllAgents");
+
+    const clearAllButton =
+        document.getElementById("mobileClearAllAgents");
+
+    const countLabel =
+        document.getElementById("mobileAgentSelectCount");
+
+
+    /* ----------------------------------------------------------
+       UPDATE COUNT
+       ---------------------------------------------------------- */
+
+    function updateMobileAgentCount(){
+
+        const originalCheckboxes =
+            originalList.querySelectorAll(
+                'input[type="checkbox"]'
+            );
+
+        const selected =
+            originalList.querySelectorAll(
+                'input[type="checkbox"]:checked'
+            ).length;
+
+        const total = originalCheckboxes.length;
+
+        if(selected === total){
+            countLabel.textContent =
+                `ALL ${total} AGENTS SELECTED`;
+        }else if(selected === 0){
+            countLabel.textContent =
+                "NO AGENTS SELECTED";
+        }else{
+            countLabel.textContent =
+                `${selected} / ${total} AGENTS SELECTED`;
+        }
+    }
+
+
+    /* ----------------------------------------------------------
+       SYNC MODAL → ORIGINAL CHECKBOXES
+       ---------------------------------------------------------- */
+
+    function syncModalToOriginal(){
+
+        const modalCheckboxes =
+            modalContent.querySelectorAll(
+                'input[type="checkbox"]'
+            );
+
+        const originalCheckboxes =
+            originalList.querySelectorAll(
+                'input[type="checkbox"]'
+            );
+
+        modalCheckboxes.forEach((checkbox, index) => {
+
+            if(originalCheckboxes[index]){
+                originalCheckboxes[index].checked =
+                    checkbox.checked;
+            }
+
+        });
+
+        /*
+         * Trigger the existing change listener.
+         *
+         * Your current JS already listens for changes to the
+         * original agent list, so this keeps the existing logic.
+         */
+        originalList.dispatchEvent(
+            new Event("change", { bubbles: true })
+        );
+
+        updateMobileAgentCount();
+    }
+
+
+    /* ----------------------------------------------------------
+       SYNC ORIGINAL → MODAL
+       ---------------------------------------------------------- */
+
+    function syncOriginalToModal(){
+
+        const modalCheckboxes =
+            modalContent.querySelectorAll(
+                'input[type="checkbox"]'
+            );
+
+        const originalCheckboxes =
+            originalList.querySelectorAll(
+                'input[type="checkbox"]'
+            );
+
+        modalCheckboxes.forEach((checkbox, index) => {
+
+            if(originalCheckboxes[index]){
+                checkbox.checked =
+                    originalCheckboxes[index].checked;
+            }
+
+        });
+
+        updateMobileAgentCount();
+    }
+
+
+    /* ----------------------------------------------------------
+       OPEN MODAL
+       ---------------------------------------------------------- */
+
+    function openModal(){
+
+        syncOriginalToModal();
+
+        modal.classList.add("open");
+
+        document.body.classList.add(
+            "mobile-agent-modal-open"
+        );
+    }
+
+
+    /* ----------------------------------------------------------
+       CLOSE MODAL
+       ---------------------------------------------------------- */
+
+    function closeModal(){
+
+        syncModalToOriginal();
+
+        modal.classList.remove("open");
+
+        document.body.classList.remove(
+            "mobile-agent-modal-open"
+        );
+    }
+
+
+    /* ----------------------------------------------------------
+       BUTTON EVENTS
+       ---------------------------------------------------------- */
+
+    openButton.addEventListener(
+        "click",
+        openModal
+    );
+
+    closeButton.addEventListener(
+        "click",
+        closeModal
+    );
+
+    doneButton.addEventListener(
+        "click",
+        closeModal
+    );
+
+
+    /* ----------------------------------------------------------
+       MODAL CHECKBOX CHANGES
+       ---------------------------------------------------------- */
+
+    modalContent.addEventListener(
+        "change",
+        event => {
+
+            if(
+                event.target.matches(
+                    'input[type="checkbox"]'
+                )
+            ){
+                syncModalToOriginal();
+            }
+
+        }
+    );
+
+
+    /* ----------------------------------------------------------
+       SELECT ALL
+       ---------------------------------------------------------- */
+
+    selectAllButton.addEventListener(
+        "click",
+        () => {
+
+            modalContent
+                .querySelectorAll(
+                    'input[type="checkbox"]'
+                )
+                .forEach(
+                    checkbox => checkbox.checked = true
+                );
+
+            syncModalToOriginal();
+        }
+    );
+
+
+    /* ----------------------------------------------------------
+       CLEAR ALL
+       ---------------------------------------------------------- */
+
+    clearAllButton.addEventListener(
+        "click",
+        () => {
+
+            modalContent
+                .querySelectorAll(
+                    'input[type="checkbox"]'
+                )
+                .forEach(
+                    checkbox => checkbox.checked = false
+                );
+
+            syncModalToOriginal();
+        }
+    );
+
+
+    /* ----------------------------------------------------------
+       CLICK BACKDROP TO CLOSE
+       ---------------------------------------------------------- */
+
+    modal.addEventListener(
+        "click",
+        event => {
+
+            if(event.target === modal){
+                closeModal();
+            }
+
+        }
+    );
+
+
+    /* ----------------------------------------------------------
+       ESC TO CLOSE
+       ---------------------------------------------------------- */
+
+    document.addEventListener(
+        "keydown",
+        event => {
+
+            if(
+                event.key === "Escape" &&
+                modal.classList.contains("open")
+            ){
+                closeModal();
+            }
+
+        }
+    );
+
+
+    /* ----------------------------------------------------------
+       KEEP COUNT UPDATED
+       ---------------------------------------------------------- */
+
+    originalList.addEventListener(
+        "change",
+        updateMobileAgentCount
+    );
+
+    updateMobileAgentCount();
+}
+
+
+/* ============================================================
+   START MOBILE AGENT SELECTOR
+   ============================================================ */
+
+setupMobileAgentSelector();
+
 async function spin(){
   // Safety check: never allow a buy spin without an agent.
   if(!agentSelect.value){
