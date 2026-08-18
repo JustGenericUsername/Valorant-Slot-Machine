@@ -768,48 +768,105 @@ function chooseResult(budget, agentName){
   return candidates[candidates.length - 1];
 }
 
-function buildReel(el, pool, final, type){
-  const reel = document.createElement("div");
-  reel.className = "reel";
+async function buildReel(el, pool, final, type){
+    const reel = document.createElement("div");
+    reel.className = "reel";
 
-  const startInfo = currentStartCard(type, pool);
-  const beforeCount = 7;
-  const travelCount = 18;
-  const afterCount = 10;
-  const cards = [];
+    const startInfo = currentStartCard(type, pool);
 
-  for(let i = 0; i < beforeCount; i++) cards.push(random(pool));
+    const beforeCount = 7;
+    const travelCount = 18;
+    const afterCount = 10;
 
-  const startIndex = cards.length;
-  cards.push(startInfo.item);
+    const cards = [];
 
-  for(let i = 0; i < travelCount; i++) cards.push(random(pool));
+    for(let i = 0; i < beforeCount; i++){
+        cards.push(random(pool));
+    }
 
-  const finalIndex = cards.length;
-  cards.push(final);
+    const startIndex = cards.length;
+    cards.push(startInfo.item);
 
-  for(let i = 0; i < afterCount; i++) cards.push(random(pool));
+    for(let i = 0; i < travelCount; i++){
+        cards.push(random(pool));
+    }
 
-  reel.innerHTML = cards.map(item => renderCard(item, type)).join("");
-  el.innerHTML = "";
-  el.appendChild(reel);
+    const finalIndex = cards.length;
+    cards.push(final);
 
-  const firstCard = reel.querySelector(".reel-card");
-  let startY = 0;
-  let targetY = 0;
+    for(let i = 0; i < afterCount; i++){
+        cards.push(random(pool));
+    }
 
-  if(firstCard){
-    const cardH = firstCard.getBoundingClientRect().height;
-    const gap = parseFloat(getComputedStyle(reel).gap) || 0;
-    const step = cardH + gap;
-    const centerOffset = (el.clientHeight - cardH) / 2;
-    startY = -(startIndex * step - centerOffset);
-    targetY = -(finalIndex * step - centerOffset);
-    reel.style.transform = `translate3d(0, ${startY}px, 0)`;
-  }
+    reel.innerHTML = cards.map(item => renderCard(item, type)).join("");
 
-  return { reel, finalIndex, startIndex, startY, targetY, startItem:startInfo.item };
+    el.innerHTML = "";
+    el.appendChild(reel);
+
+    // ---------------------------------------------------------
+    // WAIT FOR IMAGES BEFORE MEASURING THE CARDS
+    // ---------------------------------------------------------
+
+    const images = [...reel.querySelectorAll("img")];
+
+    await Promise.all(
+        images.map(img => {
+            if(img.complete){
+                return Promise.resolve();
+            }
+
+            return new Promise(resolve => {
+                img.addEventListener("load", resolve, { once: true });
+                img.addEventListener("error", resolve, { once: true });
+            });
+        })
+    );
+
+    // Give the browser one frame to apply the final image sizes.
+    await new Promise(requestAnimationFrame);
+
+    // ---------------------------------------------------------
+    // CALCULATE REEL POSITION
+    // ---------------------------------------------------------
+
+    const firstCard = reel.querySelector(".reel-card");
+
+    let startY = 0;
+    let targetY = 0;
+
+    if(firstCard){
+
+        const cardH = firstCard.getBoundingClientRect().height;
+
+        const gap =
+            parseFloat(getComputedStyle(reel).gap) || 0;
+
+        const step = cardH + gap;
+
+        const centerOffset =
+            (el.clientHeight - cardH) / 2;
+
+        startY =
+            -(startIndex * step - centerOffset);
+
+        targetY =
+            -(finalIndex * step - centerOffset);
+
+        reel.style.transform =
+            `translate3d(0, ${startY}px, 0)`;
+    }
+
+    return {
+        reel,
+        finalIndex,
+        startIndex,
+        startY,
+        targetY,
+        startItem: startInfo.item
+    };
 }
+
+
 function random(arr){
   if(!arr || !arr.length) return {name:"Nothing", price:0, icon:"◌"};
   return arr[Math.floor(Math.random()*arr.length)];
@@ -1143,14 +1200,16 @@ async function spin(){
 
   // Build a real stack of cards for each wheel. The winning item is placed
   // deep inside the stack so the wheel has plenty of visible movement.
-  const wr=buildReel(els.weapon,wp,final.w,"weapon");
-  const ur=buildReel(els.utility,up,final.u,"utility");
-  const sr=buildReel(els.shield,sp,final.s,"shield");
+  const [wr, ur, sr] = await Promise.all([
+    buildReel(els.weapon, wp, final.w, "weapon"),
+    buildReel(els.utility, up, final.u, "utility"),
+    buildReel(els.shield, sp, final.s, "shield")
+]);
 
   // Start each wheel from the current visible position and spin together.
   [wr,ur,sr].forEach(obj=>{
     obj.reel.style.transition="none";
-  });
+});
 
   const weaponDuration = 5800 + randomDelay(0, 250);
   const utilityDuration = 5800 + randomDelay(100, 350);

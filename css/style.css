@@ -432,120 +432,368 @@
 
 @media (max-width: 700px) {
 
-  /* Give the page a little less padding */
-  body {
-    padding: 10px;
-  }
+    /* ----------------------------------------------------------
+       GLOBAL
+       ---------------------------------------------------------- */
+
+    *,
+    *::before,
+    *::after {
+        box-sizing: border-box;
+    }
+
+    html,
+    body {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
+    body {
+        margin: 0;
+        padding: 4px;
+    }
 
 
-  /* ----------------------------------------------------------
-     TOP CONTROLS
-     ---------------------------------------------------------- */
+    /* ----------------------------------------------------------
+       TOP CONTROLS
+       ---------------------------------------------------------- */
 
-  .controls {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 10px;
-  }
+    .controls {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 8px;
+        width: 100%;
+    }
 
-  .controls > div {
-    width: 100%;
-  }
+    .controls > div {
+        width: 100%;
+        min-width: 0;
+    }
 
-  select,
-  input {
-    width: 100%;
-    min-height: 46px;
-    font-size: 16px; /* prevents iPhone zooming */
-  }
-
-
-  /* ----------------------------------------------------------
-     BUTTONS
-     ---------------------------------------------------------- */
-
-  button {
-    min-height: 46px;
-    font-size: 11px;
-  }
-
-  #spin {
-    width: 100%;
-    min-height: 56px;
-    font-size: 14px;
-  }
+    select,
+    input {
+        width: 100%;
+        min-height: 46px;
+        padding: 0 10px;
+        font-size: 16px;
+    }
 
 
-  /* ----------------------------------------------------------
-     AGENT RANDOMIZER
-     ---------------------------------------------------------- */
+    /* ----------------------------------------------------------
+       BUTTONS
+       ---------------------------------------------------------- */
 
-  .agent-randomizer {
-    margin: 10px 0;
-    padding: 12px;
-  }
+    button {
+        min-height: 44px;
+        padding: 8px 12px;
+        font-size: 11px;
+    }
 
-  .agent-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 6px;
-  }
-
-  .agent-check {
-    min-width: 0;
-    min-height: 48px;
-    padding: 6px;
-  }
-
-  .agent-check img {
-    width: 30px;
-    height: 30px;
-  }
+    #spin {
+        width: 100%;
+        min-height: 58px;
+        margin-top: 10px;
+        font-size: 14px;
+    }
 
 
-  /* ----------------------------------------------------------
-     SLOT MACHINE
-     ---------------------------------------------------------- */
+    /* ----------------------------------------------------------
+       AGENT RANDOMIZER
+       ---------------------------------------------------------- */
 
-  .wheels {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
+    .agent-randomizer {
+        width: 100%;
+        margin: 8px 0;
+        padding: 8px;
+    }
 
-  .window {
-    width: 100%;
-    height: 190px;
-  }
+    .agent-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 5px;
+        width: 100%;
+    }
 
+    .agent-check {
+        min-width: 0;
+        min-height: 44px;
+        padding: 5px;
+        overflow: hidden;
+    }
 
-  /* ----------------------------------------------------------
-     REEL ITEMS
-     ---------------------------------------------------------- */
-
-  .reel-card {
-    min-height: 70px;
-  }
-
-
-  /* ----------------------------------------------------------
-     SUMMARY
-     ---------------------------------------------------------- */
-
-  .summary {
-    grid-template-columns: 1fr;
-  }
+    .agent-check img {
+        width: 28px;
+        height: 28px;
+        object-fit: contain;
+        flex-shrink: 0;
+    }
 
 
-  /* ----------------------------------------------------------
-     TEXT
-     ---------------------------------------------------------- */
+    /* ==========================================================
+       WHEELS
+       ========================================================== */
 
-  h1 {
-    font-size: 24px;
-  }
+    .wheels {
+        display: grid;
 
-  .subtitle {
-    font-size: 9px;
-  }
+        /* KEEP ALL THREE WHEELS SIDE-BY-SIDE */
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+
+        gap: 0;
+
+        width: 100%;
+        min-width: 0;
+
+        margin: 0;
+        padding: 0;
+    }
+
+
+    /* ----------------------------------------------------------
+       WHEEL WINDOW
+       ---------------------------------------------------------- */
+
+    .window {
+        width: 100%;
+
+        /*
+         * MUCH TALLER THAN BEFORE
+         */
+        height: 300px;
+        min-height: 300px;
+
+        min-width: 0;
+
+        position: relative;
+        overflow: hidden;
+
+        padding: 0;
+        margin: 0;
+    }
+
+
+    /* ----------------------------------------------------------
+       REEL
+       ---------------------------------------------------------- */
+
+    .reel {
+        width: 100%;
+        min-width: 0;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        gap: 8px;
+    }
+
+
+    /* ==========================================================
+       REEL CARDS
+       ========================================================== */
+
+    .reel-card {
+
+        /*
+         * Use almost the ENTIRE wheel width.
+         *
+         * Previously:
+         * calc(100% - 20px)
+         *
+         * That was making the cards tiny.
+         */
+        width: calc(100% - 8px);
+
+        /*
+         * BIGGER CARDS
+         */
+        height: 150px;
+        min-height: 150px;
+
+        margin: 0 auto;
+        padding: 8px 5px;
+
+        box-sizing: border-box;
+
+        overflow: hidden;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        text-align: center;
+    }
+
+
+    /* ----------------------------------------------------------
+       CARD CONTENT
+       ---------------------------------------------------------- */
+
+    .item-copy {
+        width: 100%;
+        height: 100%;
+
+        display: flex;
+        flex-direction: column;
+
+        align-items: center;
+        justify-content: center;
+
+        text-align: center;
+
+        overflow: hidden;
+    }
+
+
+    /* ----------------------------------------------------------
+       ITEM IMAGE
+       ---------------------------------------------------------- */
+
+    .item-image {
+        display: block;
+
+        /*
+         * Larger icons
+         */
+        width: 58px;
+        height: 58px;
+
+        max-width: 100%;
+
+        object-fit: contain;
+
+        flex: 0 0 58px;
+
+        margin: 0 auto 5px;
+    }
+
+
+    /* ----------------------------------------------------------
+       ITEM NAME
+       ---------------------------------------------------------- */
+
+    .item-name {
+        width: 100%;
+        max-width: 100%;
+
+        margin: 2px 0;
+
+        /*
+         * Slightly smaller so names fit inside
+         * the narrow three-column cards.
+         */
+        font-size: 13px;
+        line-height: 1.1;
+
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+
+    /* ----------------------------------------------------------
+       ITEM META
+       ---------------------------------------------------------- */
+
+    .item-meta {
+        width: 100%;
+        max-width: 100%;
+
+        font-size: 9px;
+        line-height: 1.15;
+
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+
+    /* ----------------------------------------------------------
+       ITEM DETAILS
+       ---------------------------------------------------------- */
+
+    .item-detail,
+    .item-bind {
+        max-width: 100%;
+
+        font-size: 9px;
+        line-height: 1.15;
+
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+
+    /* ==========================================================
+       WHEEL HEADERS
+       ========================================================== */
+
+    .wheels > * {
+        min-width: 0;
+    }
+
+
+    /* ==========================================================
+       SUMMARY
+       ========================================================== */
+
+    .summary {
+        display: grid;
+        grid-template-columns: 1fr;
+
+        gap: 8px;
+
+        width: 100%;
+        min-width: 0;
+    }
+
+
+    /* ==========================================================
+       HEADINGS
+       ========================================================== */
+
+    h1 {
+        font-size: 22px;
+        line-height: 1.1;
+    }
+
+    .subtitle {
+        font-size: 9px;
+        line-height: 1.3;
+    }
+
+
+    /* ==========================================================
+       READY / STATUS
+       ========================================================== */
+
+    .status,
+    .ready,
+    .result-status {
+        width: 100%;
+
+        font-size: 12px;
+        line-height: 1.35;
+
+        text-align: center;
+    }
+
+
+    /* ==========================================================
+       SPIN BUTTON
+       ========================================================== */
+
+    #spin {
+        width: 100%;
+
+        min-height: 60px;
+
+        margin-top: 10px;
+        padding: 12px 16px;
+
+        font-size: 14px;
+        letter-spacing: 1.5px;
+    }
 }
