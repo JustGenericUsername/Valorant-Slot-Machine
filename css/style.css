@@ -1625,3 +1625,424 @@
         display: none;
     }
 }
+
+/* ============================================================
+   CROSSHAIR RANDOMIZER
+   ============================================================ */
+
+.crosshair-generator {
+    /* FORCE full available width */
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+
+    /* Don't let existing section rules affect it */
+    box-sizing: border-box !important;
+
+    /* Full border around the entire section */
+    border: 1px solid #253441 !important;
+
+    /* Same general background as the rest of the UI */
+    background: rgba(8, 13, 19, 0.72);
+
+    /* No weird inherited sizing */
+    height: auto !important;
+
+    /* Spacing */
+    margin: 14px 0 0 0 !important;
+
+    /* Prevent it being treated as a grid item with a
+       restricted size */
+    grid-column: 1 / -1 !important;
+}
+
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+
+.crosshair-generator-header {
+    width: 100% !important;
+
+    height: 38px !important;
+    min-height: 38px !important;
+
+    box-sizing: border-box;
+
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0 12px;
+
+    border-bottom: 1px solid #253441;
+
+    /* Keep everything on ONE line */
+    white-space: nowrap;
+
+    text-align: center;
+
+    color: #8c99a7;
+
+    font-size: 9px;
+
+    font-weight: 900;
+
+    letter-spacing: .13em;
+
+    text-transform: uppercase;
+}
+
+
+/* ============================================================
+   CODE + BUTTON ROW
+   ============================================================ */
+
+.crosshair-generator-row {
+    width: 100% !important;
+    max-width: none !important;
+
+    box-sizing: border-box;
+
+    display: grid !important;
+
+    /*
+       CODE = takes ALL remaining space
+       COPY = 58px
+       RANDOM = 105px
+    */
+    grid-template-columns:
+        minmax(0, 1fr)
+        58px
+        105px;
+
+    gap: 7px;
+
+    padding: 10px;
+
+    align-items: stretch;
+}
+
+
+/* ============================================================
+   CODE BOX
+   ============================================================ */
+
+.crosshair-code {
+    width: 100% !important;
+    min-width: 0 !important;
+
+    height: 48px !important;
+    min-height: 48px !important;
+    max-height: 48px !important;
+
+    box-sizing: border-box;
+
+    padding: 0 14px;
+
+    background: #ffffff !important;
+
+    color: #111111 !important;
+
+    border: 2px solid #ffffff !important;
+
+    border-radius: 0;
+
+    outline: none;
+
+    font-family:
+        Consolas,
+        "Courier New",
+        monospace;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    letter-spacing: .01em;
+}
+
+
+.crosshair-code::placeholder {
+    color: #555555;
+    opacity: 1;
+}
+
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+
+.crosshair-button {
+    width: 100% !important;
+
+    height: 48px !important;
+    min-height: 48px !important;
+    max-height: 48px !important;
+
+    box-sizing: border-box;
+
+    margin: 0 !important;
+    padding: 0 8px;
+
+    border-radius: 0;
+
+    cursor: pointer;
+
+    font-size: 9px;
+
+    font-weight: 900;
+
+    letter-spacing: .1em;
+}
+
+
+/* ============================================================
+   COPY BUTTON
+   ============================================================ */
+
+.crosshair-copy-button {
+    background: #101821 !important;
+
+    color: #75f4d1 !important;
+
+    border: 2px solid #34414e !important;
+
+    /*
+       ⎘ is a cleaner copy-style symbol than the
+       overlapping-square character we had before.
+    */
+    font-size: 22px;
+
+    line-height: 1;
+}
+
+
+/* Hover */
+
+.crosshair-copy-button:hover:not(:disabled) {
+    background: #121e27 !important;
+
+    border-color: #75f4d1 !important;
+}
+
+
+/* Disabled */
+
+.crosshair-copy-button:disabled {
+    opacity: .45;
+
+    cursor: default;
+}
+
+
+/* ============================================================
+   RANDOM BUTTON
+   ============================================================ */
+
+.crosshair-random-button {
+    background: var(--accent) !important;
+
+    color: #06100e !important;
+
+    border: 2px solid var(--accent) !important;
+}
+
+
+/* ============================================================
+   MOBILE
+   ============================================================ */
+
+@media (max-width: 700px) {
+
+    .crosshair-generator {
+        width: 100% !important;
+        max-width: none !important;
+
+        margin-top: 12px !important;
+    }
+
+
+    /* --------------------------------------------------------
+       HEADER
+       -------------------------------------------------------- */
+
+    .crosshair-generator-header {
+
+        width: 100% !important;
+
+        height: 34px !important;
+        min-height: 34px !important;
+
+        padding: 0 8px;
+
+        font-size: 8px;
+
+        letter-spacing: .08em;
+
+        white-space: nowrap;
+    }
+
+
+    /* --------------------------------------------------------
+       ROW
+       -------------------------------------------------------- */
+
+    .crosshair-generator-row {
+
+        width: 100% !important;
+
+        grid-template-columns:
+            minmax(0, 1fr)
+            52px
+            78px;
+
+        gap: 5px;
+
+        padding: 8px;
+    }
+
+
+    /* --------------------------------------------------------
+       CODE
+       -------------------------------------------------------- */
+
+    .crosshair-code {
+
+        height: 46px !important;
+        min-height: 46px !important;
+        max-height: 46px !important;
+
+        padding: 0 10px;
+
+        font-size: 10px;
+    }
+
+
+    /* --------------------------------------------------------
+       BUTTONS
+       -------------------------------------------------------- */
+
+    .crosshair-button {
+
+        height: 46px !important;
+        min-height: 46px !important;
+        max-height: 46px !important;
+
+        padding: 0 4px;
+
+        font-size: 8px;
+    }
+
+
+    .crosshair-copy-button {
+        font-size: 18px;
+    }
+}
+
+/* ============================================================
+   CROSSHAIR COPY BUTTON
+   Always displays the copy icon
+   ============================================================ */
+
+.crosshair-copy-button {
+    position: relative !important;
+
+    width: 58px !important;
+    min-width: 58px !important;
+    max-width: 58px !important;
+
+    height: 48px !important;
+    min-height: 48px !important;
+    max-height: 48px !important;
+
+    padding: 0 !important;
+
+    background: #101821 !important;
+
+    color: transparent !important;
+
+    border: 2px solid #34414e !important;
+
+    font-size: 0 !important;
+
+    line-height: 1 !important;
+
+    overflow: hidden !important;
+}
+
+
+/* The icon we actually want to show */
+
+.crosshair-copy-button::before {
+    content: "⎘";
+
+    position: absolute;
+
+    left: 0;
+    top: 0;
+
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    color: var(--accent);
+
+    font-size: 21px;
+
+    line-height: 1;
+
+    pointer-events: none;
+}
+
+
+/* Hover */
+
+.crosshair-copy-button:hover {
+    background: #121e27 !important;
+
+    border-color: var(--accent) !important;
+}
+
+
+/* Keep icon visible on hover */
+
+.crosshair-copy-button:hover::before {
+    color: var(--accent);
+}
+
+
+/* Keep icon visible while clicking */
+
+.crosshair-copy-button:active::before,
+.crosshair-copy-button:focus::before,
+.crosshair-copy-button:focus-visible::before {
+    color: var(--accent);
+}
+
+
+/* ============================================================
+   MOBILE
+   ============================================================ */
+
+@media (max-width: 700px) {
+
+    .crosshair-copy-button {
+        width: 52px !important;
+        min-width: 52px !important;
+        max-width: 52px !important;
+
+        height: 46px !important;
+        min-height: 46px !important;
+        max-height: 46px !important;
+    }
+
+    .crosshair-copy-button::before {
+        font-size: 18px;
+    }
+}

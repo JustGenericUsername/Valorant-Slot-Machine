@@ -656,7 +656,7 @@ function currentStartCard(type, pool){
 }
 function renderAllWindows(){
   renderStaticReel(els.weapon, weapons, "weapon");
-  renderStaticReel(els.utility, getUtilityPool(getPreviewAgent()), "utility");
+  renderStaticReel(els.utility,[...getUtilityPool(getPreviewAgent()),NO_UTILITY],"utility");
   renderStaticReel(els.shield, shields, "shield");
 }
 
@@ -673,7 +673,7 @@ function chooseResult(budget, agentName){
   const utilPool = getUtilityPool(agentName);
 
   const weaponPool = affordablePool(weapons, budget);
-  const utilityPool = affordablePool(utilPool, budget);
+  const utilityPool = [...affordablePool(utilPool, budget),NO_UTILITY];
   const shieldPool = affordablePool(shields, budget);
 
   const candidates = [];
@@ -878,6 +878,49 @@ function isFullUtil(item){
     .toLowerCase() === "fullutil";
 }
 
+
+
+// ============================================================
+// 🔧 NO-UTILITY SETTINGS
+// ============================================================
+//
+// Controls how likely the player is to receive NO UTILITY.
+//
+// 1.0 = normal chance
+// 2.0 = twice as likely
+// 0.5 = half as likely
+// 0.1 = very rare
+//
+// This is a MULTIPLIER on top of the normal price weighting.
+//
+// Example:
+//
+//   NO_UTILITY_WEIGHT = 1
+//   → normal chance
+//
+//   NO_UTILITY_WEIGHT = 2
+//   → twice as likely
+//
+//   NO_UTILITY_WEIGHT = 0.5
+//   → half as likely
+//
+// ============================================================
+
+const NO_UTILITY_WEIGHT = 1.5;
+
+
+// ============================================================
+// 🔧 NO-SHIELD SETTINGS
+// ============================================================
+//
+// "Nothing" already exists in your shield data.
+//
+// This lets you control how likely NO SHIELD is.
+//
+// ============================================================
+
+const NO_SHIELD_WEIGHT = 1.0;
+
 // ============================================================
 // FULL UTILITY WEIGHT SETTINGS
 // ============================================================
@@ -990,6 +1033,17 @@ function weightedRandom(arr, type = "", budget = 0){
       0.75
     );
 
+    // --------------------------------------------------------
+    // NO UTILITY
+    // --------------------------------------------------------
+
+    if(item.name === "Nothing" && type === "utility"){
+        weight *= NO_UTILITY_WEIGHT;
+    }
+
+    if(item.name === "Nothing" && type === "shield"){
+        weight *= NO_SHIELD_WEIGHT;
+    }
 
     // ========================================================
     // FULL UTIL SPECIAL WEIGHTING
@@ -1095,6 +1149,14 @@ function weightedRandom(arr, type = "", budget = 0){
   return arr[arr.length - 1];
 
 }
+
+const NO_UTILITY = {
+    name: "Nothing",
+    price: 0,
+    icon: "◌",
+    type: "None",
+    bind: "0"
+};
 
 function affordablePool(pool, budget){
   return pool.filter(x=>x.price<=budget);
@@ -1637,7 +1699,7 @@ async function spin(){
   const utils=agents[spinAgent];
 
   const wp=affordablePool(weapons,startCredits);
-  const up=affordablePool(utils,startCredits);
+  const up=[...affordablePool(utils,startCredits),NO_UTILITY];
   const sp=affordablePool(shields,startCredits);
 
   // Build a real stack of cards for each wheel. The winning item is placed
@@ -1713,3 +1775,169 @@ async function spin(){
 }
 
 spinBtn.addEventListener("click",spin);
+
+// ============================================================
+// CROSSHAIR RANDOMIZER
+// ============================================================
+
+const crosshairCodeInput =
+    document.getElementById("crosshairCode");
+
+const randomizeCrosshairBtn =
+    document.getElementById("randomizeCrosshair");
+
+const copyCrosshairBtn =
+    document.getElementById("copyCrosshair");
+
+
+// ============================================================
+// REMEMBER LAST CROSSHAIR
+// ============================================================
+
+let lastCrosshairIndex = -1;
+
+
+// ============================================================
+// RANDOMIZE CROSSHAIR
+// ============================================================
+
+function randomizeCrosshair(){
+
+    // Safety check
+    if(!crosshairs || crosshairs.length === 0){
+
+        crosshairCodeInput.value = "";
+
+        copyCrosshairBtn.disabled = true;
+
+        return;
+    }
+
+
+    // --------------------------------------------------------
+    // ONLY ONE CROSSHAIR
+    // --------------------------------------------------------
+
+    if(crosshairs.length === 1){
+
+        lastCrosshairIndex = 0;
+
+        crosshairCodeInput.value =
+            crosshairs[0].code;
+
+        copyCrosshairBtn.disabled = false;
+
+        return;
+    }
+
+
+    // --------------------------------------------------------
+    // PICK RANDOM INDEX
+    // --------------------------------------------------------
+
+    let randomIndex =
+        Math.floor(
+            Math.random() * crosshairs.length
+        );
+
+
+    // Never allow the same index twice in a row
+    if(randomIndex === lastCrosshairIndex){
+
+        randomIndex =
+            (randomIndex + 1) % crosshairs.length;
+    }
+
+
+    // Remember it
+    lastCrosshairIndex = randomIndex;
+
+
+    // Get crosshair
+    const crosshair =
+        crosshairs[randomIndex];
+
+
+    // Display code
+    crosshairCodeInput.value =
+        crosshair.code;
+
+
+    // Enable copy
+    copyCrosshairBtn.disabled = false;
+}
+
+
+// ============================================================
+// COPY CROSSHAIR
+// ============================================================
+
+async function copyCrosshair(){
+
+    const code =
+        crosshairCodeInput.value.trim();
+
+
+    if(!code){
+        return;
+    }
+
+
+    try {
+
+        await navigator.clipboard.writeText(code);
+
+        // Keep the button as the copy icon.
+        // Just give it a temporary visual state.
+        copyCrosshairBtn.classList.add("copied");
+
+        setTimeout(() => {
+
+            copyCrosshairBtn.classList.remove("copied");
+
+        }, 1200);
+
+
+    } catch(error) {
+
+        // Fallback
+        crosshairCodeInput.focus();
+
+        crosshairCodeInput.select();
+
+        document.execCommand("copy");
+
+        copyCrosshairBtn.classList.add("copied");
+
+        setTimeout(() => {
+
+            copyCrosshairBtn.classList.remove("copied");
+
+        }, 1200);
+
+    }
+}
+
+
+// ============================================================
+// BUTTON EVENTS
+// ============================================================
+
+if(randomizeCrosshairBtn){
+
+    randomizeCrosshairBtn.addEventListener(
+        "click",
+        randomizeCrosshair
+    );
+
+}
+
+
+if(copyCrosshairBtn){
+
+    copyCrosshairBtn.addEventListener(
+        "click",
+        copyCrosshair
+    );
+
+}
