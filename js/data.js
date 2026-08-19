@@ -169,7 +169,7 @@ const agents = {
     {name:"Shock Bolt", price:150, bind:"Q", icon:"Abilities/Shock_Bolt.png"},
     {name:"Shock Bolt (x2)", price:300, bind:"Q", icon:"Abilities/Shock_Bolt.png"},
     {name:"Full Util", price:700, bind:"X", icon:"Abilities/SovaUlt.png"},
-    {name:"Owl Drone", price:400, bind:"C", icon:"Abilities/Dark_Cover.png"}
+    {name:"Owl Drone", price:400, bind:"C", icon:"Abilities/Owl_Drone.png"}
   ],
   Tejo: [
     {name:"Stealth Drone", price:400, bind:"C", icon:"Abilities/Stealth_Drone.png"},
