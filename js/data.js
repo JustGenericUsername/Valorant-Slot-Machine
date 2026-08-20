@@ -117,8 +117,8 @@ const agents = {
     {name:"Nanoswarm (x2)", price:400, bind:"C", icon:"Abilities/Nanoswarm.png"}
   ],
   Miks: [
-    {name:"M-Pulse", price:250, bind:"C", icon:"Abilities/M-Pulse.png"},
-    {name:"M-Pulse (x2)", price:500, bind:"C", icon:"Abilities/M-Pulse.png"},
+    {name:"M-Pulse", price:250, bind:"C", icon:"Abilities/MPulse.png"},
+    {name:"M-Pulse (x2)", price:500, bind:"C", icon:"Abilities/MPulse.png"},
     {name:"Harmonize", price:200, bind:"Q", icon:"Abilities/Harmonize.png"},
     {name:"Full Util", price:700, bind:"X", icon:"Abilities/MiksUlt.png"}
   ],
