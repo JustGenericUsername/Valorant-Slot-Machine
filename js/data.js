@@ -17,6 +17,7 @@ const weapons = [
   {name:"Guardian", price:2250, icon:"▰", type:"Rifle"},
   {name:"Phantom", price:2900, icon:"▰", type:"Rifle"},
   {name:"Vandal", price:2900, icon:"▰", type:"Rifle"},
+  {name:"Warden", price:2900, icon:"▰", type:"Rifle"},
   {name:"Marshal", price:950, icon:"▰", type:"Sniper"},
   {name:"Outlaw", price:2400, icon:"▰", type:"Sniper"},
   {name:"Operator", price:4700, icon:"▰", type:"Sniper"},
